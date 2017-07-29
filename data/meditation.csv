@@ -1,0 +1,61 @@
+ID,Group,Name,Recruited By,Location,Age Group,Gender,Religion,"Pre-existing blood pressure? (High, Avg, Low)",Years of meditation practice,"Cups of coffee (amount, time)",elapsed time since last caffeinated drink,Online (O) or in-person (I)?,Date of Experiment,Start Time,Before Meditation strenuous activity?,Before Meditation how relaxed?,Before Meditation BP Measurement,,,After Meditation BP Measurement,,,Post-Meditation focus?,Before coloring BP Measurement,,,After coloring BP Measurement,,,Enjoy Coloring?
+1,0,"Sundell, Jenna",Erika,"San Diego, CA",40-49,F,Buddhist,Low,25,1/2,6,O,7/25/2017,3:00 PM,Yes,a little tense,112,71,55,96,59,59,4,108,64,54,94,64,59,2
+2,1,"Hanni, Karin",Erika,"Bellingham, WA",40-49,F,Buddhist,Avg,10,,,,8/2/2017,,,,,,,,,,,,,,,,,
+3,0,"Roe, Brian",Erika,"Lopez Island, WA",50-59,M,Buddhist,Avg,45,2,6,O,7/23/2017,7:45 PM,Yes,relaxed,114,70,78,122,73,85,4,123,64,79,109,69,83,4
+4,1,"Aboud, Julie",Erika,"San Diego, CA",50-59,F,Spiritual,Low,47,1,3,O,7/23/2017,1:30 PM,Maybe (walking),relaxed,134,97,97,108,71,95,3,121,91,100,113,75,93,5
+5,0,"Harrison, Kelly",Erika,"Redwood City, CA",50-59,F,Buddhist,Avg,24,3,5,I,7/26/2017,7:15 PM,No,relaxed,119,81,75,121,81,79,4,124,79,77,116,65,82,4
+6,1,"Sy, Gilbert",Erika,"Palo Alto, CA",50-59,M,None,Avg,0,1,1,I,7/21/2017,3:10 PM,No,relaxed,131,92,76,125,88,76,3,128,89,79,130,92,72,2
+7,0,"Trivedi, Prashant",Erika,"Palo Alto, CA",40-49,M,Hindu,Avg,0,1,6,I,7/24/2017,2:05 PM,No,a little tense,108,69,71,111,70,64,4,111,70,63,110,72,68,4
+8,1,"Noe, Emmai",Erika,"Palo Alto, CA",50-59,F,Cathollic,High,0,1,6,I,7/21/2017,3:10 PM,Maybe (walking),relaxed,130,88,71,121,77,68,4,131,93,74,128,87,74,4
+9,0,"Baniqued, June",Thong,"San Jose, CA",40-49,M,Agnostic,High,0,,,,,,,,,,,,,,,,,,,,,
+10,0,"Ambati, Mallik",Erika,"Palo Alto, CA",30-39,M,Hindu,Avg,2,2,2,I,7/24/2017,1:00 PM,No,a little tense,114,78,81,96,62,79,3,116,81,85,111,75,77,4
+11,1,"Kavumpurath, Naiju",Erika,"Palo Alto, CA",30-39,M,None,Avg,1,2,2,I,7/21/2017,3:10 PM,No,a little tense,132,83,84,119,78,83,5,140,79,86,131,83,84,5
+12,1,"Hooke, Mary",Erika,"Sausalito, CA",,F,None,Avg,25,0,NA,O,7/23/2017,9:30 AM,No,a little tense,121,71,64,115,83,81,3,119,75,73,113,75,68,3
+13,0,"Murrain, Michelle",Thong,"Healdsburg, CA",50-60,F,Christian/Buddhist,High,27,,,,,,,,,,,,,,,,,,,,,
+14,0,"Groden, Thomas",Thong,San Francisco,40-50,M,,,,,,,,,,,,,,,,,,,,,,,,
+15,0,"Boniface, Stephen",Thong,"San Jose, CA",40-50,M,Buddhist,High,17,,,,,,,,,,,,,,,,,,,,,
+16,0,"Valens, Jo",Thong,MA,60-70,F,,,,,,,,,,,,,,,,,,,,,,,,
+17,1,"Post, Lisa",Post,"Farmerville, LA",30-39,F,Christian,,?,,,,,,,,,,,,,,,,,,,,,
+18,0,"Post, Abigail",Post,"Farmerville, LA",10-19,F,Christian,,?,,,,,,,,,,,,,,,,,,,,,
+19,1,"Post, David",Post,"Farmerville, LA",10-19,M,Christian,,0,,,,,,,,,,,,,,,,,,,,,
+20,0,"Post, Joseph",Post,"Farmerville, LA",5-9,M,Christian,,0,,,,,,,,,,,,,,,,,,,,,
+21,1,"Post, Moses",Post,"Farmerville, LA",5-9,M,Christian,,0,,,,,,,,,,,,,,,,,,,,,
+22,1,"Carpenter, Landon",Post,"Farmerville, LA",10-19,M,Christian,,0,,,,,,,,,,,,,,,,,,,,,
+23,0,"Carpenter, Joe",Post,"Farmerville, LA",10-19,M,Christian,,0,,,,,,,,,,,,,,,,,,,,,
+24,1,"Connelly, Ben",Thong,"San Francisco, CA",40-49,M,Buddhist,Avg,0,,,,,,,,,,,,,,,,,,,,,
+25,1,"Bui, Tiep",Thong,"Huntington Beach, Ca",80-90,M,Buddhist,Avg,25,,,,,,,,,,,,,,,,,,,,,
+26,1,"Bui, Cam",Thong,"Huntington Beach, Ca",80-90,F,Buddhist,Avg,25,,,,,,,,,,,,,,,,,,,,,
+27,1,"Bui, Chau",Thong,"Huntington Beach, Ca",50-60,M,Buddhist,Avg,0,,,,,,,,,,,,,,,,,,,,,
+28,1,"Hee, Andrew",Thong,"San Francisco, CA",40-50,M,,,,,,,,,,,,,,,,,,,,,,,,
+29,0,Hiro,Thong,"San Francisco, CA",40-50,M,,,,,,,,,,,,,,,,,,,,,,,,
+30,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
