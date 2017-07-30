@@ -5,6 +5,8 @@ output: html_document
 ---
 ```{r}
 library(data.table)
+library(sandwich)
+library(lmtest)
 ```
 
 # Exploring data
@@ -13,12 +15,14 @@ library(data.table)
 d <- fread("../data/meditation.csv")
 summary(d)
 d <- data.table(d)
-d2 <- d[ , .(is_online = ifelse(Online_in_person == 'O', 1, 0),
+d2 <- d[ , .(Group, 
+             is_online = ifelse(Online_in_person == 'O', 1, 0),
              B4_Med_BP_Sys,
              After_Med_BP_Sys,
              B4_color_BP_Sys,
              After_color_BP_Sys) ]
 summary(d2)
+hist(d2$Group)
 hist(d2$is_online, breaks=30)
 hist(d2$B4_Med_BP_Sys, breaks = 30)
 hist(d2$After_Med_BP_Sys, breaks = 30)
@@ -26,3 +30,15 @@ hist(d2$B4_color_BP_Sys, breaks = 30)
 hist(d2$After_color_BP_Sys, breaks = 30)
 ```
 
+# Regression model within-person
+Baseline/control is coloring
+
+Meditation is treatment
+
+```{r}
+
+m <- lm(After_Med_BP_Sys ~ B4_Med_BP_Sys + Group + B4_Med_BP_Sys * Group, data=d2)
+coeftest(m, vcovHC(m))
+
+m2 <- lm(After_color_BP_Sys ~ B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
+coeftest(m2, vcovHC(m2))
