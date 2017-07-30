@@ -13,7 +13,7 @@ library(lmtest)
 
 ```{r}
 d <- fread("../data/meditation.csv")
-summary(d)
+str(d)
 d <- data.table(d)
 d2 <- d[ , .(Group, 
              is_online = ifelse(Online_in_person == 'O', 1, 0),
@@ -22,12 +22,35 @@ d2 <- d[ , .(Group,
              B4_color_BP_Sys,
              After_color_BP_Sys) ]
 summary(d2)
-hist(d2$Group)
-hist(d2$is_online, breaks=30)
+#hist(d2$Group)
+#hist(d2$is_online, breaks=30)
+par(mfrow=c(2,2))
 hist(d2$B4_Med_BP_Sys, breaks = 30)
 hist(d2$After_Med_BP_Sys, breaks = 30)
 hist(d2$B4_color_BP_Sys, breaks = 30)
 hist(d2$After_color_BP_Sys, breaks = 30)
+
+library(RColorBrewer)
+#display.brewer.all()
+cols<-brewer.pal(n=3,name="Set1")
+# Note: Group 0 is treatment group!
+cols_t1<-cols[d2$Group+1]
+med_diff <- d2$After_Med_BP_Sys- d2$B4_Med_BP_Sys
+color_diff <- d2$After_color_BP_Sys - d2$B4_color_BP_Sys
+par(mfrow =c(1,2))
+plot(d2$Group ~ med_diff , col=cols_t1, pch=16)
+legend("center",legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16)
+plot(d2$Group ~ color_diff , col=cols_t1, pch=16)
+legend("center",legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16)
+
+# Plot b4 vs after meditation for 2 groups
+plot(After_Med_BP_Sys ~ B4_Med_BP_Sys, data=d2 , col=cols_t1, pch=16)
+legend(x=110,y=133, legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+
+# Plot b4 vs after coloring for 2 groups
+plot(After_color_BP_Sys ~ B4_color_BP_Sys, data=d2 , col=cols_t1, pch=16)
+legend(x=110,y=141, legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+
 ```
 
 # Regression model within-person
