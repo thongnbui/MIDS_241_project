@@ -1,5 +1,5 @@
 ---
-title: "241 Final Project: Effect of Meditation on Blood Pressure"
+title: "241 Project (Summer 2017): Effect of Meditation on Blood Pressure"
 author: "Erika Lawrence, Thong Bui, Matt Post"
 output: html_document 
 ---
@@ -13,6 +13,8 @@ library(lmtest)
 
 ```{r}
 d <- fread("../data/meditation.csv")
+# Should be 30 subjects
+nrow(d)
 str(d)
 d <- data.table(d)
 # Reverse group number: 1 is meditation first (treatment), 0 is coloring 1st
@@ -23,8 +25,7 @@ d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0),
              B4_color_BP_Sys,
              After_color_BP_Sys) ]
 summary(d2)
-head(d)
-head(d2)
+
 #hist(d2$Group)
 #hist(d2$is_online, breaks=30)
 par(mfrow=c(2,2))
@@ -57,9 +58,9 @@ legend(x=100,y=143, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 ```
 
 # Regression model within-person
-Baseline/control is coloring
 
-Meditation is treatment
+##### Coloring first (group 0): placebo
+##### Meditation first (group 1): treatment
 
 ```{r}
 
