@@ -1,7 +1,9 @@
 ---
-title: "241 Project (Summer 2017): Effect of Meditation on Blood Pressure"
+title: '241 Project (Summer 2017): Effect of Meditation on Blood Pressure'
 author: "Erika Lawrence, Thong Bui, Matt Post"
-output: html_document 
+output:
+  pdf_document: default
+  html_document: default
 ---
 ```{r}
 library(data.table)
