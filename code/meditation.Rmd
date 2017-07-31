@@ -15,13 +15,16 @@ library(lmtest)
 d <- fread("../data/meditation.csv")
 str(d)
 d <- data.table(d)
-d2 <- d[ , .(Group, 
+# Reverse group number: 1 is meditation first (treatment), 0 is coloring 1st
+d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0), 
              is_online = ifelse(Online_in_person == 'O', 1, 0),
              B4_Med_BP_Sys,
              After_Med_BP_Sys,
              B4_color_BP_Sys,
              After_color_BP_Sys) ]
 summary(d2)
+head(d)
+head(d2)
 #hist(d2$Group)
 #hist(d2$is_online, breaks=30)
 par(mfrow=c(2,2))
@@ -39,17 +42,17 @@ med_diff <- d2$B4_Med_BP_Sys - d2$After_Med_BP_Sys
 color_diff <-  d2$B4_color_BP_Sys - d2$After_color_BP_Sys
 par(mfrow =c(1,2))
 plot(d2$Group ~ med_diff , col=cols_t1, pch=16)
-legend("center",legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16)
+legend("center",legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16)
 plot(d2$Group ~ color_diff , col=cols_t1, pch=16)
-legend("center",legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16)
+legend("center",legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16)
 
 # Plot b4 vs after meditation for 2 groups
 plot(After_Med_BP_Sys ~ B4_Med_BP_Sys, data=d2 , col=cols_t1, pch=16)
-legend(x=100,y=136, legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+legend(x=100,y=136, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
 
 # Plot b4 vs after coloring for 2 groups
 plot(After_color_BP_Sys ~ B4_color_BP_Sys, data=d2 , col=cols_t1, pch=16)
-legend(x=100,y=143, legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+legend(x=100,y=143, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
 
 ```
 
