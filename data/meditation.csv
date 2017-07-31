@@ -15,17 +15,17 @@ ID,Group,Name,Recruited_By,Location,Age_Group,Gender,Religion,Pre_existing_blood
 14,0,"Groden, Thomas",Thong,San Francisco,40-50,M,Cathollic,Avg,17,3,1,I,7/30/2017,12:15 AM,No,relaxed,114,71,77,107,73,73,4,108,63,66,101,73,70,4
 15,0,"Boniface, Stephen",Thong,"San Jose, CA",40-50,M,Buddhist,High,17,,,,,,,,,,,,,,,,,,,,,
 16,0,"Valens, Jo",Thong,MA,60-70,F,,,,,,,,,,,,,,,,,,,,,,,,
-17,1,"Post, Lisa",Post,"Farmerville, LA",30-39,F,Christian,,,,,,,,,,,,,,,,,,,,,,,
-18,0,"Post, Abigail",Post,"Farmerville, LA",10-19,F,Christian,,,,,,,,,,,,,,,,,,,,,,,
-19,1,"Post, David",Post,"Farmerville, LA",10-19,M,Christian,,0,,,,,,,,,,,,,,,,,,,,,
-20,0,"Post, Joseph",Post,"Farmerville, LA",5-9,M,Christian,,0,,,,,,,,,,,,,,,,,,,,,
-21,1,"Post, Moses",Post,"Farmerville, LA",5-9,M,Christian,,0,,,,,,,,,,,,,,,,,,,,,
-22,1,"Carpenter, Landon",Post,"Farmerville, LA",10-19,M,Christian,,0,,,,,,,,,,,,,,,,,,,,,
-23,0,"Carpenter, Joe",Post,"Farmerville, LA",10-19,M,Christian,,0,,,,,,,,,,,,,,,,,,,,,
+17,1,"Post, Lisa",Post,"Farmerville, LA",30-39,F,Christian,Avg,0,3,3,5:45 PM,7/30/2017,5:45 PM,Yes,a little tense,109,71,70,104,62,76,2,114,77,73,99,61,74,4
+18,0,"Post, Abigail",Post,"Farmerville, LA",10-19,F,Christian,Avg,0,0,0,I,7/30/2017,5:45 PM,No,a little tense,103,59,71,96,50,71,2,100,58,69,101,66,77,3
+19,1,"Post, David",Post,"Farmerville, LA",10-19,M,Christian,Avg,0,0,0,I,7/30/2017,5:45 PM,Yes,relaxed,94,52,68,101,37,81,3,99,71,68,97,68,64,4
+20,0,"Post, Joseph",Post,"Farmerville, LA",5-9,M,Christian,Avg,0,0,0,I,7/30/2017,5:45 PM,No,a little tense,100,63,75,95,61,71,2,98,71,81,92,68,77,4
+21,1,"Post, Moses",Post,"Farmerville, LA",5-9,M,Christian,Avg,0,0,0,I,7/30/2017,5:45 PM,Yes,relaxed,101,70,70,85,50,85,4,131,66,75,85,48,72,5
+22,1,"Carpenter, Landon",Post,"Farmerville, LA",10-19,M,Christian,Avg,0,,,,,,,,,,,,,,,,,,,,,
+23,0,"Carpenter, Joe",Post,"Farmerville, LA",10-19,M,Christian,Avg,0,,,,,,,,,,,,,,,,,,,,,
 24,1,"Connelly, Ben",Thong,"San Francisco, CA",40-49,M,Buddhist,Avg,0,,,,,,,,,,,,,,,,,,,,,
-25,1,"Bui, Tiep",Thong,"Huntington Beach, Ca",80-90,M,Buddhist,Avg,25,,,,,,,,,,,,,,,,,,,,,
-26,1,"Bui, Cam",Thong,"Huntington Beach, Ca",80-90,F,Buddhist,Avg,25,,,,,,,,,,,,,,,,,,,,,
-27,1,"Bui, Chau",Thong,"Huntington Beach, Ca",50-60,M,Buddhist,Avg,0,,,,,,,,,,,,,,,,,,,,,
+25,1,"Bui, Tiep",Thong,"Huntington Beach, Ca",80-90,M,Buddhist,Avg,25,2,5,O,7/30/2017,6:00 PM,No,a little tense,122,85,82,111,81,81,4,118,83,79,117,83,80,4
+26,1,"Bui, Cam",Thong,"Huntington Beach, Ca",80-90,F,Buddhist,Avg,25,1,9,O,7/30/2017,6:00 PM,No,a little tense,120,51,62,116,51,59,3,108,49,59,99,47,53,4
+27,1,"Bui, Chau",Thong,"Huntington Beach, Ca",50-60,M,Buddhist,Avg,0,1,11,O,7/30/2017,6:00 PM,No,relaxed,113,64,86,119,78,78,5,115,76,73,109,70,74,4
 28,1,"Hee, Andrew",Thong,"San Francisco, CA",40-50,M,,,,,,,,,,,,,,,,,,,,,,,,
 29,0,Hiro,Thong,"San Francisco, CA",40-50,M,,,,,,,,,,,,,,,,,,,,,,,,
 30,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

@@ -35,8 +35,8 @@ library(RColorBrewer)
 cols<-brewer.pal(n=3,name="Set1")
 # Note: Group 0 is treatment group!
 cols_t1<-cols[d2$Group+1]
-med_diff <- d2$After_Med_BP_Sys- d2$B4_Med_BP_Sys
-color_diff <- d2$After_color_BP_Sys - d2$B4_color_BP_Sys
+med_diff <- d2$B4_Med_BP_Sys - d2$After_Med_BP_Sys
+color_diff <-  d2$B4_color_BP_Sys - d2$After_color_BP_Sys
 par(mfrow =c(1,2))
 plot(d2$Group ~ med_diff , col=cols_t1, pch=16)
 legend("center",legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16)
@@ -45,11 +45,11 @@ legend("center",legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t
 
 # Plot b4 vs after meditation for 2 groups
 plot(After_Med_BP_Sys ~ B4_Med_BP_Sys, data=d2 , col=cols_t1, pch=16)
-legend(x=110,y=133, legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+legend(x=100,y=136, legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16, xpd=TRUE)
 
 # Plot b4 vs after coloring for 2 groups
 plot(After_color_BP_Sys ~ B4_color_BP_Sys, data=d2 , col=cols_t1, pch=16)
-legend(x=110,y=141, legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+legend(x=100,y=143, legend=c("Group 0: meditation", "Group 1: coloring"), col=cols_t1, pch=16, xpd=TRUE)
 
 ```
 
