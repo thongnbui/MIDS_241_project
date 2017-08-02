@@ -2,8 +2,8 @@
 title: '241 Project (Summer 2017): Effect of Meditation on Blood Pressure'
 author: "Erika Lawrence, Thong Bui, Matt Post"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 ```{r}
 library(data.table)
@@ -11,7 +11,7 @@ library(sandwich)
 library(lmtest)
 ```
 
-# Exploring data
+## Exploring data
 
 ```{r}
 d <- fread("../data/meditation.csv")
@@ -51,7 +51,7 @@ legend("center",legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t
 
 # Plot b4 vs after meditation for 2 groups
 plot(After_Med_BP_Sys ~ B4_Med_BP_Sys, data=d2 , col=cols_t1, pch=16)
-legend(x=100,y=136, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+legend(x=98,y=136, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
 
 # Plot b4 vs after coloring for 2 groups
 plot(After_color_BP_Sys ~ B4_color_BP_Sys, data=d2 , col=cols_t1, pch=16)
@@ -59,15 +59,16 @@ legend(x=100,y=143, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 
 ```
 
-# Regression model within-person
+## Linear Regression model with difference-in-difference Estimate
+##### Check for covariate balances?
 
 ##### Coloring first (group 0): placebo
 ##### Meditation first (group 1): treatment
 
 ```{r}
-
+# On meditation variables & group interaction
 m <- lm(After_Med_BP_Sys ~ B4_Med_BP_Sys + Group + B4_Med_BP_Sys * Group, data=d2)
 coeftest(m, vcovHC(m))
-
+# On coloring variables & group interaction
 m2 <- lm(After_color_BP_Sys ~ B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
 coeftest(m2, vcovHC(m2))
