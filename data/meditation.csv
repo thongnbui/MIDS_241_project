@@ -1,6 +1,6 @@
 ID,Group,Name,Recruited_By,Location,Age_Group,Gender,Religion,Pre_existing_blood_pressure,Years_practice,coffee_cups,hours_since_last_caffeinated_drink,Online_in_person,Experiment_Date,Start_Time,previous_strenuous_activity,Before_Meditation_how_relaxed,B4_Med_BP_Sys,B4_Med_BP_DIA,B4_Med_BP_PUL,After_Med_BP_Sys,After_Med_BP_DIA,After_Med_BP_PUL,Post_Med_focus,B4_color_BP_Sys,B4_color_BP_DIA,B4_color_BP_Pul,After_color_BP_Sys,After_color_BP_DIA,After_color_BP_Pul,Enjoy_Coloring
 1,0,"Sundell, Jenna",Erika,"San Diego, CA",40-49,F,Buddhist,Low,25,1/2,6,O,7/25/2017,3:00 PM,Yes,a little tense,112,71,55,96,59,59,4,108,64,54,94,64,59,2
-2,1,"Hanni, Karin",Erika,"Bellingham, WA",40-49,F,Buddhist,Avg,10,,,,8/2/2017,,,,,,,,,,,,,,,,,
+2,1,"Hanni, Karin",Erika,"Bellingham, WA",40-49,F,Buddhist,Avg,10,2,10,O,8/2/2017,8:00 PM,No,a little tense,107,59,74,110,61,75,3,122,64,79,101,57,75,3.5
 3,0,"Roe, Brian",Erika,"Lopez Island, WA",50-59,M,Buddhist,Avg,45,2,6,O,7/23/2017,7:45 PM,Yes,relaxed,114,70,78,122,73,85,4,123,64,79,109,69,83,4
 4,1,"Aboud, Julie",Erika,"San Diego, CA",50-59,F,Spiritual,Low,47,1,3,O,7/23/2017,1:30 PM,Maybe (walking),relaxed,134,97,97,108,71,95,3,121,91,100,113,75,93,5
 5,0,"Harrison, Kelly",Erika,"Redwood City, CA",50-59,F,Buddhist,Avg,24,3,5,I,7/26/2017,7:15 PM,No,relaxed,119,81,75,121,81,79,4,124,79,77,116,65,82,4
@@ -10,12 +10,12 @@ ID,Group,Name,Recruited_By,Location,Age_Group,Gender,Religion,Pre_existing_blood
 9,0,"Baniqued, June",Thong,"San Jose, CA",40-49,M,Agnostic,High,0,,,,,,,,,,,,,,,,,,,,,
 10,0,"Ambati, Mallik",Erika,"Palo Alto, CA",30-39,M,Hindu,Avg,2,2,2,I,7/24/2017,1:00 PM,No,a little tense,114,78,81,96,62,79,3,116,81,85,111,75,77,4
 11,1,"Kavumpurath, Naiju",Erika,"Palo Alto, CA",30-39,M,None,Avg,1,2,2,I,7/21/2017,3:10 PM,No,a little tense,132,83,84,119,78,83,5,140,79,86,131,83,84,5
-12,1,"Hooke, Mary",Erika,"Sausalito, CA",,F,None,Avg,25,0,NA,O,7/23/2017,9:30 AM,No,a little tense,121,71,64,115,83,81,3,119,75,73,113,75,68,3
-13,0,"Murrain, Michelle",Thong,"Healdsburg, CA",50-60,F,Christian/Buddhist,High,27,,,,,,,,,,,,,,,,,,,,,
-14,0,"Groden, Thomas",Thong,San Francisco,40-50,M,Cathollic,Avg,17,3,1,I,7/30/2017,12:15 AM,No,relaxed,114,71,77,107,73,73,4,108,63,66,101,73,70,4
+12,1,"Hooke, Mary",Erika,"Sausalito, CA",40-49,F,None,Avg,25,0,,O,7/23/2017,9:30 AM,No,a little tense,121,71,64,115,83,81,3,119,75,73,113,75,68,3
+13,1,"Murrain, Michelle",Thong,"Healdsburg, CA",50-60,F,Christian/Buddhist,High,27,0,,O,8/4/2017,10:09,Yes,a little tense,113,59,61,174,93,54,4,189,104,64,156,94,63,4
+14,0,"Groden, Thomas",Thong,San Francisco,40-50,M,None,Avg,17,3,1,I,7/30/2017,12:15 AM,No,relaxed,114,71,77,107,73,73,4,108,63,66,101,73,70,4
 15,0,"Boniface, Stephen",Thong,"San Jose, CA",40-50,M,Buddhist,High,17,,,,,,,,,,,,,,,,,,,,,
-16,0,"Valens, Jo",Thong,MA,60-70,F,,,,,,,,,,,,,,,,,,,,,,,,
-17,1,"Post, Lisa",Post,"Farmerville, LA",30-39,F,Christian,Avg,0,3,3,5:45 PM,7/30/2017,5:45 PM,Yes,a little tense,109,71,70,104,62,76,2,114,77,73,99,61,74,4
+16,0,"Valens, Jo",Thong,MA,60-70,F,Christian,High,25,1,8,O,8/3/2017,11:05,No,a little tense,138,91,61,134,80,57,4,136,80,58,121,81,57,3.5
+17,1,"Post, Lisa",Post,"Farmerville, LA",30-39,F,Christian,Avg,0,3,3,I,7/30/2017,5:45 PM,Yes,a little tense,109,71,70,104,62,76,2,114,77,73,99,61,74,4
 18,0,"Post, Abigail",Post,"Farmerville, LA",10-19,F,Christian,Avg,0,0,0,I,7/30/2017,5:45 PM,No,a little tense,103,59,71,96,50,71,2,100,58,69,101,66,77,3
 19,1,"Post, David",Post,"Farmerville, LA",10-19,M,Christian,Avg,0,0,0,I,7/30/2017,5:45 PM,Yes,relaxed,94,52,68,101,37,81,3,99,71,68,97,68,64,4
 20,0,"Post, Joseph",Post,"Farmerville, LA",5-9,M,Christian,Avg,0,0,0,I,7/30/2017,5:45 PM,No,a little tense,100,63,75,95,61,71,2,98,71,81,92,68,77,4
@@ -23,9 +23,11 @@ ID,Group,Name,Recruited_By,Location,Age_Group,Gender,Religion,Pre_existing_blood
 22,1,"Carpenter, Landon",Post,"Farmerville, LA",10-19,M,Christian,Avg,0,,,,,,,,,,,,,,,,,,,,,
 23,0,"Carpenter, Joe",Post,"Farmerville, LA",10-19,M,Christian,Avg,0,,,,,,,,,,,,,,,,,,,,,
 24,1,"Connelly, Ben",Thong,"San Francisco, CA",40-49,M,Buddhist,Avg,0,,,,,,,,,,,,,,,,,,,,,
-25,1,"Bui, Tiep",Thong,"Huntington Beach, Ca",80-90,M,Buddhist,Avg,25,2,5,O,7/30/2017,6:00 PM,No,a little tense,122,85,82,111,81,81,4,118,83,79,117,83,80,4
-26,1,"Bui, Cam",Thong,"Huntington Beach, Ca",80-90,F,Buddhist,Avg,25,1,9,O,7/30/2017,6:00 PM,No,a little tense,120,51,62,116,51,59,3,108,49,59,99,47,53,4
-27,1,"Bui, Chau",Thong,"Huntington Beach, Ca",50-60,M,Buddhist,Avg,0,1,11,O,7/30/2017,6:00 PM,No,relaxed,113,64,86,119,78,78,5,115,76,73,109,70,74,4
-28,1,"Hee, Andrew",Thong,"San Francisco, CA",40-50,M,,,,,,,,,,,,,,,,,,,,,,,,
-29,0,Hiro,Thong,"San Francisco, CA",40-50,M,,,,,,,,,,,,,,,,,,,,,,,,
-30,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+25,0,"Bui, Tiep",Thong,"Huntington Beach, Ca",80-90,M,Buddhist,Avg,25,2,5,O,7/30/2017,6:00 PM,No,a little tense,122,85,82,111,81,81,4,118,83,79,117,83,80,4
+26,0,"Bui, Cam",Thong,"Huntington Beach, Ca",80-90,F,Buddhist,Avg,25,1,9,O,7/30/2017,6:00 PM,No,a little tense,120,51,62,116,51,59,3,108,49,59,99,47,53,4
+27,0,"Bui, Chau",Thong,"Huntington Beach, Ca",50-60,M,Buddhist,Avg,0,1,11,O,7/30/2017,6:00 PM,No,relaxed,113,64,86,119,78,78,5,115,76,73,109,70,74,4
+28,1,"Hee, Andrew",Thong,"San Francisco, CA",40-50,M,None,Avg,0,,,,,,,,,,,,,,,,,,,,,
+29,1,"Kamado, Hiro",Thong,"San Francisco, CA",40-50,M,None,Avg,0,,,,,,,,,,,,,,,,,,,,,
+30,1,"Nguyen, Hien",Thong,"Oakland, CA",40-50,M,None,Avg,0,,,,,,,,,,,,,,,,,,,,,
+31,0,"Reccow, Hui",Erika,"Irvine, CA",30-40,F,Buddhist,Avg,11,2,4,O,8/4/2017,8:30 PM,Yes,a little tense,92,62,94,96,54,93,2.5,92,55,100,87,43,74,4
+32,1,"Hoagland, Darin",Thong,"Oakland, CA",,M,None,Avg,0,,,,,,,,,,,,,,,,,,,,,
