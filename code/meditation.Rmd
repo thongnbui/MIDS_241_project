@@ -13,6 +13,8 @@ library(lmtest)
 
 ## Exploring data
 
+Description our subjects (friends and family)
+
 ```{r}
 d <- fread("../data/meditation.csv")
 # Should be 30 subjects
@@ -60,10 +62,13 @@ legend(x=100,y=143, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 ```
 
 ## Linear Regression model with difference-in-difference Estimate
-##### Check for covariate balances?
+##### Choice of outcome variables: How do we use other After_*_BP* variables?
+##### How to check for covariate balances?
 
 ##### Coloring first (group 0): placebo
 ##### Meditation first (group 1): treatment
+
+##### How do we use Pre_existing_blood_pressure into our model? Convert it to 1 (low),2 (avg),3 (high)?
 
 ```{r}
 # On meditation variables & group interaction
@@ -72,3 +77,7 @@ coeftest(m, vcovHC(m))
 # On coloring variables & group interaction
 m2 <- lm(After_color_BP_Sys ~ B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
 coeftest(m2, vcovHC(m2))
+```
+
+##### Can't generalize from this finding because:
+##### Subjects are our friends and relatives. This sample is not randomized from the general population. 

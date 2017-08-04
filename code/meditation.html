@@ -133,6 +133,7 @@ library(lmtest)</code></pre>
 ##     as.Date, as.Date.numeric</code></pre>
 <div id="exploring-data" class="section level2">
 <h2>Exploring data</h2>
+<p>Description our subjects (friends and family)</p>
 <pre class="r"><code>d &lt;- fread(&quot;../data/meditation.csv&quot;)
 # Should be 30 subjects
 nrow(d)</code></pre>
@@ -228,14 +229,17 @@ legend(x=100,y=143, legend=c(&quot;Group 1: meditation&quot;, &quot;Group 0: col
 </div>
 <div id="linear-regression-model-with-difference-in-difference-estimate" class="section level2">
 <h2>Linear Regression model with difference-in-difference Estimate</h2>
-<div id="check-for-covariate-balances" class="section level5">
-<h5>Check for covariate balances?</h5>
+<div id="choice-of-outcome-variables-how-do-we-use-other-after__bp-variables-how-to-check-for-covariate-balances" class="section level5">
+<h5>Choice of outcome variables: How do we use other After_*_BP* variables? ##### How to check for covariate balances?</h5>
 </div>
 <div id="coloring-first-group-0-placebo" class="section level5">
 <h5>Coloring first (group 0): placebo</h5>
 </div>
 <div id="meditation-first-group-1-treatment" class="section level5">
 <h5>Meditation first (group 1): treatment</h5>
+</div>
+<div id="how-do-we-use-pre_existing_blood_pressure-into-our-model-convert-it-to-1-low2-avg3-high" class="section level5">
+<h5>How do we use Pre_existing_blood_pressure into our model? Convert it to 1 (low),2 (avg),3 (high)?</h5>
 <pre class="r"><code># On meditation variables &amp; group interaction
 m &lt;- lm(After_Med_BP_Sys ~ B4_Med_BP_Sys + Group + B4_Med_BP_Sys * Group, data=d2)
 coeftest(m, vcovHC(m))</code></pre>
@@ -262,6 +266,12 @@ coeftest(m2, vcovHC(m2))</code></pre>
 ## B4_color_BP_Sys:Group  0.033069   0.430090  0.0769  0.93973  
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="cant-generalize-from-this-finding-because" class="section level5">
+<h5>Can’t generalize from this finding because:</h5>
+</div>
+<div id="subjects-are-our-friends-and-relatives.-this-sample-is-not-randomized-from-the-general-population." class="section level5">
+<h5>Subjects are our friends and relatives. This sample is not randomized from the general population.</h5>
 </div>
 </div>
 
