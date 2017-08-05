@@ -14,20 +14,29 @@ library(lmtest)
 ## Exploring data
 
 Description our subjects (friends and family)
+##### How do we use Pre_existing_blood_pressure into our model? Convert it to 1 (low),2 (avg),3 (high)?
+
 
 ```{r}
 d <- fread("../data/meditation.csv")
 # Should be 30 subjects
 nrow(d)
 str(d)
+#d[13]
 d <- data.table(d)
 # Reverse group number: 1 is meditation first (treatment), 0 is coloring 1st
 d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0), 
+             Years_practice,
+             hours_since_last_caffeinated_drink,
              is_online = ifelse(Online_in_person == 'O', 1, 0),
+#             Pre_existing_blood_pressure,
+             pre_existing_BP = ifelse(Pre_existing_blood_pressure == 'Low', 1, 
+                                      ifelse(Pre_existing_blood_pressure == 'Avg', 1, 2)),
              B4_Med_BP_Sys,
              After_Med_BP_Sys,
              B4_color_BP_Sys,
              After_color_BP_Sys) ]
+
 summary(d2)
 
 #hist(d2$Group)
@@ -53,7 +62,7 @@ legend("center",legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t
 
 # Plot b4 vs after meditation for 2 groups
 plot(After_Med_BP_Sys ~ B4_Med_BP_Sys, data=d2 , col=cols_t1, pch=16)
-legend(x=98,y=136, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+legend(x=98,y=147, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
 
 # Plot b4 vs after coloring for 2 groups
 plot(After_color_BP_Sys ~ B4_color_BP_Sys, data=d2 , col=cols_t1, pch=16)
@@ -62,20 +71,22 @@ legend(x=100,y=143, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 ```
 
 ## Linear Regression model with difference-in-difference Estimate
+
 ##### Choice of outcome variables: How do we use other After_*_BP* variables?
+
 ##### How to check for covariate balances?
 
 ##### Coloring first (group 0): placebo
 ##### Meditation first (group 1): treatment
 
-##### How do we use Pre_existing_blood_pressure into our model? Convert it to 1 (low),2 (avg),3 (high)?
+
 
 ```{r}
 # On meditation variables & group interaction
-m <- lm(After_Med_BP_Sys ~ B4_Med_BP_Sys + Group + B4_Med_BP_Sys * Group, data=d2)
-coeftest(m, vcovHC(m))
+m1 <- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + hours_since_last_caffeinated_drink + B4_Med_BP_Sys + Group + B4_Med_BP_Sys * Group, data=d2)
+coeftest(m1, vcovHC(m1))
 # On coloring variables & group interaction
-m2 <- lm(After_color_BP_Sys ~ B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
+m2 <- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + hours_since_last_caffeinated_drink + B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
 coeftest(m2, vcovHC(m2))
 ```
 
