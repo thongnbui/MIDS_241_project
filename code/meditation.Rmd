@@ -82,6 +82,27 @@ legend(x=100,y=175, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 
 ##### How to check for covariate balances?
 
+```{r}
+cat("Age Covariate Balance:\n")
+(cov_table_age = table(d$Group, d$Age_Group))
+cat("\nMeditation Experience Covariate Balance:\n")
+d <- transform(d, experience=cut(Years_practice,  
+                              breaks=c(-1,1, 10, 25, 50),
+                             labels= c(0,10, 25, 50)))
+(col_table_years = table(d$Group, d$experience))
+
+cat("\nPre-existing Blood Pressure Covariate Balance:\n")
+(cov_pre_bp = table(d$Group, d$Pre_existing_blood_pressure))
+
+cat("\nCaffeinated Drinks Covariate Balance:\n")
+(cov_caff = table(d$Group[d$hours_since_last_caffeinated_drink < 2],
+                    d$caffeinated_drinks[d$hours_since_last_caffeinated_drink < 2]))
+
+cat("\nIn Person vs Online Covariate Balance:\n")
+(cov_online = table(d$Group, d$Online_in_person))
+
+```
+
 ##### Coloring first (group 0): placebo
 ##### Meditation first (group 1): treatment
 
@@ -89,6 +110,11 @@ legend(x=100,y=175, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 ```{r}
 ate <- mean(d2[d2$Group == 1, After_Med_BP_Sys], na.rm=TRUE) - mean(d2[d2$Group == 0, After_color_BP_Sys], na.rm=TRUE)
 ate
+
+d2$med_diff = d2$After_Med_BP_Sys - d2$B4_Med_BP_Sys
+d2$col_diff = d2$After_color_BP_Sys - d2$B4_color_BP_Sys
+ate_diff = mean(d2$med_diff, na.rm=TRUE) - mean(d2$col_diff, na.rm=TRUE)
+ate_diff
 ```
 
 ###Models on meditation data
