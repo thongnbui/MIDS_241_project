@@ -258,6 +258,85 @@ legend(x=100,y=175, legend=c(&quot;Group 1: meditation&quot;, &quot;Group 0: col
 </div>
 <div id="how-to-check-for-covariate-balances" class="section level5">
 <h5>How to check for covariate balances?</h5>
+<pre class="r"><code>cat(&quot;Age Covariate Balance:\n&quot;)</code></pre>
+<pre><code>## Age Covariate Balance:</code></pre>
+<pre class="r"><code>(cov_table_age = table(d$Group, d$Age_Group))</code></pre>
+<pre><code>##    
+##     10-19 30-39 30-40 40-49 40-50 5-9 50-59 50-60 60-70 80-90
+##   0     2     1     1     3     2   1     2     1     1     2
+##   1     2     2     0     3     4   1     3     1     0     0</code></pre>
+<pre class="r"><code>cat(&quot;\nGender Covariate Balance:\n&quot;)</code></pre>
+<pre><code>## 
+## Gender Covariate Balance:</code></pre>
+<pre class="r"><code>(cov_table_age = table(d$Group, d$Gender))</code></pre>
+<pre><code>##    
+##      F  M
+##   0  6 10
+##   1  6 10</code></pre>
+<pre class="r"><code>cat(&quot;\nReligion Covariate Balance:\n&quot;)</code></pre>
+<pre><code>## 
+## Religion Covariate Balance:</code></pre>
+<pre class="r"><code>(cov_table_age = table(d$Group, d$Religion))</code></pre>
+<pre><code>##    
+##     Agnostic Buddhist Cathollic Christian Christian/Buddhist Hindu None
+##   0        1        8         0         4                  0     2    1
+##   1        0        2         1         4                  1     0    7
+##    
+##     Spiritual
+##   0         0
+##   1         1</code></pre>
+<pre class="r"><code>cat(&quot;\nMeditation Experience Covariate Balance:\n&quot;)</code></pre>
+<pre><code>## 
+## Meditation Experience Covariate Balance:</code></pre>
+<pre class="r"><code>d &lt;- transform(d, experience=cut(Years_practice,  
+                              breaks=c(-1,1, 10, 25, 50),
+                             labels= c(0,10, 25, 50)))
+(col_table_years = table(d$Group, d$experience))</code></pre>
+<pre><code>##    
+##      0 10 25 50
+##   0  6  1  8  1
+##   1 12  1  1  2</code></pre>
+<pre class="r"><code>cat(&quot;\nPre-existing Blood Pressure Covariate Balance:\n&quot;)</code></pre>
+<pre><code>## 
+## Pre-existing Blood Pressure Covariate Balance:</code></pre>
+<pre class="r"><code>(cov_pre_bp = table(d$Group, d$Pre_existing_blood_pressure))</code></pre>
+<pre><code>##    
+##     Avg High Low
+##   0  12    3   1
+##   1  13    2   1</code></pre>
+<pre class="r"><code>cat(&quot;\nCaffeinated Drinks Covariate Balance:\n&quot;)</code></pre>
+<pre><code>## 
+## Caffeinated Drinks Covariate Balance:</code></pre>
+<pre class="r"><code>(cov_caff = table(d$Group[d$hours_since_last_caffeinated_drink &lt; 2],
+                    d$caffeinated_drinks[d$hours_since_last_caffeinated_drink &lt; 2]))</code></pre>
+<pre><code>##    
+##     1 2 3
+##   0 0 1 1
+##   1 1 0 0</code></pre>
+<pre class="r"><code>cat(&quot;\nPrevious Activity Covariate Balance:\n&quot;)</code></pre>
+<pre><code>## 
+## Previous Activity Covariate Balance:</code></pre>
+<pre class="r"><code>(cov_pre_bp = table(d$Group, d$previous_strenuous_activity))</code></pre>
+<pre><code>##    
+##        Maybe (walking) No Yes
+##   0  1               0 11   4
+##   1  1               2  8   5</code></pre>
+<pre class="r"><code>cat(&quot;\nPrevious Relaxation Covariate Balance:\n&quot;)</code></pre>
+<pre><code>## 
+## Previous Relaxation Covariate Balance:</code></pre>
+<pre class="r"><code>(cov_pre_bp = table(d$Group, d$Before_Meditation_how_relaxed))</code></pre>
+<pre><code>##    
+##       a little tense relaxed
+##   0 1              9       6
+##   1 1              6       9</code></pre>
+<pre class="r"><code>cat(&quot;\nIn Person vs Online Covariate Balance:\n&quot;)</code></pre>
+<pre><code>## 
+## In Person vs Online Covariate Balance:</code></pre>
+<pre class="r"><code>(cov_online = table(d$Group, d$Online_in_person))</code></pre>
+<pre><code>##    
+##         I  O
+##   0  1  6  9
+##   1  1 11  4</code></pre>
 </div>
 <div id="coloring-first-group-0-placebo" class="section level5">
 <h5>Coloring first (group 0): placebo</h5>
@@ -270,6 +349,11 @@ legend(x=100,y=175, legend=c(&quot;Group 1: meditation&quot;, &quot;Group 0: col
 <pre class="r"><code>ate &lt;- mean(d2[d2$Group == 1, After_Med_BP_Sys], na.rm=TRUE) - mean(d2[d2$Group == 0, After_color_BP_Sys], na.rm=TRUE)
 ate</code></pre>
 <pre><code>## [1] -4.866667</code></pre>
+<pre class="r"><code>d2$med_diff = d2$After_Med_BP_Sys - d2$B4_Med_BP_Sys
+d2$col_diff = d2$After_color_BP_Sys - d2$B4_color_BP_Sys
+ate_diff = mean(d2$med_diff, na.rm=TRUE) - mean(d2$col_diff, na.rm=TRUE)
+ate_diff</code></pre>
+<pre><code>## [1] 5.166667</code></pre>
 </div>
 <div id="models-on-meditation-data" class="section level3">
 <h3>Models on meditation data</h3>
