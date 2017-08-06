@@ -9,6 +9,9 @@ output:
 library(data.table)
 library(sandwich)
 library(lmtest)
+library(stargazer)
+library(RColorBrewer)
+
 ```
 
 ## Exploring data
@@ -25,13 +28,15 @@ str(d)
 #d[13]
 d <- data.table(d)
 # Reverse group number: 1 is meditation first (treatment), 0 is coloring 1st
-d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0), 
+#d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th person
+d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0),
+             caffeinated_drinks,
              Years_practice,
              hours_since_last_caffeinated_drink,
              is_online = ifelse(Online_in_person == 'O', 1, 0),
 #             Pre_existing_blood_pressure,
              pre_existing_BP = ifelse(Pre_existing_blood_pressure == 'Low', 1, 
-                                      ifelse(Pre_existing_blood_pressure == 'Avg', 1, 2)),
+                                      ifelse(Pre_existing_blood_pressure == 'Avg', 2, 3)),
              B4_Med_BP_Sys,
              After_Med_BP_Sys,
              B4_color_BP_Sys,
@@ -41,13 +46,14 @@ summary(d2)
 
 #hist(d2$Group)
 #hist(d2$is_online, breaks=30)
-par(mfrow=c(2,2))
+par(mfrow=c(3,2))
+hist(d2$Years_practice, breaks = 30)
+hist(d2$hours_since_last_caffeinated_drink, breaks = 30)
 hist(d2$B4_Med_BP_Sys, breaks = 30)
 hist(d2$After_Med_BP_Sys, breaks = 30)
 hist(d2$B4_color_BP_Sys, breaks = 30)
 hist(d2$After_color_BP_Sys, breaks = 30)
 
-library(RColorBrewer)
 #display.brewer.all()
 cols<-brewer.pal(n=3,name="Set1")
 # Note: Group 0 is treatment group!
@@ -62,11 +68,11 @@ legend("center",legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t
 
 # Plot b4 vs after meditation for 2 groups
 plot(After_Med_BP_Sys ~ B4_Med_BP_Sys, data=d2 , col=cols_t1, pch=16)
-legend(x=98,y=147, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+legend(x=98,y=200, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
 
 # Plot b4 vs after coloring for 2 groups
 plot(After_color_BP_Sys ~ B4_color_BP_Sys, data=d2 , col=cols_t1, pch=16)
-legend(x=100,y=143, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+legend(x=100,y=175, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
 
 ```
 
@@ -79,16 +85,33 @@ legend(x=100,y=143, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 ##### Coloring first (group 0): placebo
 ##### Meditation first (group 1): treatment
 
-
-
+##### ATE between meditation vs color
 ```{r}
-# On meditation variables & group interaction
-m1 <- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + hours_since_last_caffeinated_drink + B4_Med_BP_Sys + Group + B4_Med_BP_Sys * Group, data=d2)
-coeftest(m1, vcovHC(m1))
-# On coloring variables & group interaction
-m2 <- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + hours_since_last_caffeinated_drink + B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
-coeftest(m2, vcovHC(m2))
+ate <- mean(d2[d2$Group == 1, After_Med_BP_Sys], na.rm=TRUE) - mean(d2[d2$Group == 0, After_color_BP_Sys], na.rm=TRUE)
+ate
 ```
 
+###Models on meditation data
+
+```{r}
+# On meditation variables on treatment group
+m1 <- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2[Group==1])
+summary(m1)
+#stargazer(m1, m2, type = "text")
+```
+
+### Models on coloring data
+
+```{r}
+# On coloring variables regardless of group
+m3 <- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys, data=d2[Group== 0])
+
+# On coloring variables & group interaction
+#m4 <- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
+#stargazer(m3, m4, type = "text")
+summary(m3)
+
+```
+# Generalization
 ##### Can't generalize from this finding because:
-##### Subjects are our friends and relatives. This sample is not randomized from the general population. 
+##### Subjects are our friends and relatives. This sample is not randomized from the general population therefore doesn't represent the population's distribution
