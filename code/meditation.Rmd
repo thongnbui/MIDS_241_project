@@ -85,6 +85,13 @@ legend(x=100,y=175, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 ```{r}
 cat("Age Covariate Balance:\n")
 (cov_table_age = table(d$Group, d$Age_Group))
+
+cat("\nGender Covariate Balance:\n")
+(cov_table_age = table(d$Group, d$Gender))
+
+cat("\nReligion Covariate Balance:\n")
+(cov_table_age = table(d$Group, d$Religion))
+
 cat("\nMeditation Experience Covariate Balance:\n")
 d <- transform(d, experience=cut(Years_practice,  
                               breaks=c(-1,1, 10, 25, 50),
@@ -97,6 +104,13 @@ cat("\nPre-existing Blood Pressure Covariate Balance:\n")
 cat("\nCaffeinated Drinks Covariate Balance:\n")
 (cov_caff = table(d$Group[d$hours_since_last_caffeinated_drink < 2],
                     d$caffeinated_drinks[d$hours_since_last_caffeinated_drink < 2]))
+
+cat("\nPrevious Activity Covariate Balance:\n")
+(cov_pre_bp = table(d$Group, d$previous_strenuous_activity))
+
+
+cat("\nPrevious Relaxation Covariate Balance:\n")
+(cov_pre_bp = table(d$Group, d$Before_Meditation_how_relaxed))
 
 cat("\nIn Person vs Online Covariate Balance:\n")
 (cov_online = table(d$Group, d$Online_in_person))
