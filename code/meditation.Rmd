@@ -28,8 +28,9 @@ str(d)
 #d[13]
 d <- data.table(d)
 # Reverse group number: 1 is meditation first (treatment), 0 is coloring 1st
-#d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th person
-d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0),
+# We are remove ID = 13 because this person's BP number ob
+d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th person
+#d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0),
              caffeinated_drinks,
              Years_practice,
              hours_since_last_caffeinated_drink,
@@ -37,10 +38,10 @@ d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0),
 #             Pre_existing_blood_pressure,
              pre_existing_BP = ifelse(Pre_existing_blood_pressure == 'Low', 1, 
                                       ifelse(Pre_existing_blood_pressure == 'Avg', 2, 3)),
-             B4_Med_BP_Sys,
-             After_Med_BP_Sys,
-             B4_color_BP_Sys,
-             After_color_BP_Sys) ]
+             B4_Med_BP_Sys, B4_Med_BP_PUL,
+             After_Med_BP_Sys, After_Med_BP_PUL,
+             B4_color_BP_Sys, B4_color_BP_Pul, 
+             After_color_BP_Sys, After_color_BP_Pul) ]
 
 summary(d2)
 
@@ -122,24 +123,29 @@ cat("\nIn Person vs Online Covariate Balance:\n")
 
 ##### ATE between meditation vs color
 ```{r}
-ate <- mean(d2[d2$Group == 1, After_Med_BP_Sys], na.rm=TRUE) - mean(d2[d2$Group == 0, After_color_BP_Sys], na.rm=TRUE)
-ate
-
 d2$med_sys_diff = d2$After_Med_BP_Sys - d2$B4_Med_BP_Sys
 d2$col_sys_diff = d2$After_color_BP_Sys - d2$B4_color_BP_Sys
 (ate_sys_diff = mean(d2$med_sys_diff, na.rm=TRUE) - mean(d2$col_sys_diff, na.rm=TRUE))
+
+d2$med_pul_diff = d2$After_Med_BP_PUL - d2$B4_Med_BP_PUL
+d2$col_pul_diff = d2$After_color_BP_Pul - d2$B4_color_BP_Pul
+(ate_col_diff = mean(d2$med_pul_diff, na.rm=TRUE) - mean(d2$col_pul_diff, na.rm=TRUE))
 ```
 
-###Models on meditation data
+### Models on meditation data
 
 ```{r}
-# On meditation variables on treatment group
+# On meditation Sys on treatment group
 m1 <- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2[Group==1])
 summary(m1)
 
 m2 <- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2)
-summary(m2)
-#stargazer(m1, m2, type = "text")
+#summary(m2)
+
+# On meditation pulse on treatment group
+m2b <- lm(After_Med_BP_PUL ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_PUL , data=d2)
+#summary(m2b)
+stargazer(m2, m2b, type = "text")
 ```
 
 ### Models on coloring data
@@ -148,9 +154,12 @@ summary(m2)
 # On coloring variables regardless of group
 m3 <- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys, data=d2[Group== 0])
 
-# On coloring variables & group interaction
+# On coloring systolic & group interaction
 m4 <- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
-stargazer(m3, m4, type = "text")
+# On coloring pulse & group interaction
+m4b <- lm(After_color_BP_Pul ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys + Group + B4_color_BP_Pul * Group, data=d2)
+
+stargazer(m3, m4, m4b, type = "text")
 ```
 # Generalization
 ##### Can't generalize from this finding because:
