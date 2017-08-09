@@ -125,10 +125,9 @@ cat("\nIn Person vs Online Covariate Balance:\n")
 ate <- mean(d2[d2$Group == 1, After_Med_BP_Sys], na.rm=TRUE) - mean(d2[d2$Group == 0, After_color_BP_Sys], na.rm=TRUE)
 ate
 
-d2$med_diff = d2$After_Med_BP_Sys - d2$B4_Med_BP_Sys
-d2$col_diff = d2$After_color_BP_Sys - d2$B4_color_BP_Sys
-ate_diff = mean(d2$med_diff, na.rm=TRUE) - mean(d2$col_diff, na.rm=TRUE)
-ate_diff
+d2$med_sys_diff = d2$After_Med_BP_Sys - d2$B4_Med_BP_Sys
+d2$col_sys_diff = d2$After_color_BP_Sys - d2$B4_color_BP_Sys
+(ate_sys_diff = mean(d2$med_sys_diff, na.rm=TRUE) - mean(d2$col_sys_diff, na.rm=TRUE))
 ```
 
 ###Models on meditation data
@@ -137,6 +136,9 @@ ate_diff
 # On meditation variables on treatment group
 m1 <- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2[Group==1])
 summary(m1)
+
+m2 <- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2)
+summary(m2)
 #stargazer(m1, m2, type = "text")
 ```
 
@@ -147,10 +149,8 @@ summary(m1)
 m3 <- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys, data=d2[Group== 0])
 
 # On coloring variables & group interaction
-#m4 <- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
-#stargazer(m3, m4, type = "text")
-summary(m3)
-
+m4 <- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
+stargazer(m3, m4, type = "text")
 ```
 # Generalization
 ##### Can't generalize from this finding because:
