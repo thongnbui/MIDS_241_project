@@ -367,137 +367,66 @@ d2$col_pul_diff = d2$After_color_BP_Pul - d2$B4_color_BP_Pul
 <div id="models-on-meditation-data" class="section level3">
 <h3>Models on meditation data</h3>
 <pre class="r"><code># On meditation Sys on treatment group
-m1 &lt;- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2[Group==1])
-summary(m1)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = After_Med_BP_Sys ~ pre_existing_BP + Years_practice + 
-##     caffeinated_drinks + hours_since_last_caffeinated_drink + 
-##     B4_Med_BP_Sys, data = d2[Group == 1])
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -10.9015  -5.1595   0.3952   3.1777  15.6487 
-## 
-## Coefficients:
-##                                    Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)                         22.9943    32.7826   0.701    0.501
-## pre_existing_BP                      8.3394     7.4182   1.124    0.290
-## Years_practice                       0.3656     0.2241   1.632    0.137
-## caffeinated_drinks                   1.4804     4.5365   0.326    0.752
-## hours_since_last_caffeinated_drink   0.3409     0.6053   0.563    0.587
-## B4_Med_BP_Sys                        0.5172     0.3370   1.535    0.159
-## 
-## Residual standard error: 8.925 on 9 degrees of freedom
-##   (1 observation deleted due to missingness)
-## Multiple R-squared:  0.7153, Adjusted R-squared:  0.5571 
-## F-statistic: 4.522 on 5 and 9 DF,  p-value: 0.02441</code></pre>
-<pre class="r"><code>m2 &lt;- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2)
-#summary(m2)
+#m1 &lt;- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2[Group==1])
+
+#m2 &lt;- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2)
+m1 &lt;- lm(med_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)
+#stargazer(m2, m2a, type = &quot;text&quot;)
 
 # On meditation pulse on treatment group
-m2b &lt;- lm(After_Med_BP_PUL ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_PUL , data=d2)
+#m2b &lt;- lm(After_Med_BP_PUL ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_PUL , data=d2)
 #summary(m2b)
-stargazer(m2, m2b, type = &quot;text&quot;)</code></pre>
-<pre><code>## 
-## ====================================================================
-##                                           Dependent variable:       
-##                                    ---------------------------------
-##                                    After_Med_BP_Sys After_Med_BP_PUL
-##                                          (1)              (2)       
-## --------------------------------------------------------------------
-## pre_existing_BP                         4.216            0.301      
-##                                        (4.579)          (2.662)     
-##                                                                     
-## Years_practice                          -0.199           0.088      
-##                                        (0.202)          (0.143)     
-##                                                                     
-## Group                                   -5.684          -6.122*     
-##                                        (4.020)          (3.054)     
-##                                                                     
-## caffeinated_drinks                      0.863            2.062      
-##                                        (2.727)          (1.974)     
-##                                                                     
-## hours_since_last_caffeinated_drink      0.224            0.343*     
-##                                        (0.313)          (0.186)     
-##                                                                     
-## B4_Med_BP_Sys                          0.723***                     
-##                                        (0.178)                      
-##                                                                     
-## B4_Med_BP_PUL                                           0.912***    
-##                                                         (0.150)     
-##                                                                     
-## Years_practice:Group                    0.478*           0.095      
-##                                        (0.236)          (0.208)     
-##                                                                     
-## Constant                                16.845           2.744      
-##                                        (20.114)         (11.516)    
-##                                                                     
-## --------------------------------------------------------------------
-## Observations                              29               29       
-## R2                                      0.688            0.767      
-## Adjusted R2                             0.584            0.689      
-## Residual Std. Error (df = 21)           8.010            5.734      
-## F Statistic (df = 7; 21)               6.608***         9.863***    
-## ====================================================================
-## Note:                                    *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+m2 &lt;- lm(med_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)
+
+#stargazer(m1, m2, type = &quot;text&quot;)</code></pre>
 </div>
 <div id="models-on-coloring-data" class="section level3">
 <h3>Models on coloring data</h3>
 <pre class="r"><code># On coloring variables regardless of group
-m3 &lt;- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys, data=d2[Group== 0])
+#m3 &lt;- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys, data=d2[Group== 0])
 
-# On coloring systolic &amp; group interaction
-m4 &lt;- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys + Group + B4_color_BP_Sys * Group, data=d2)
+m3 &lt;- lm(col_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)
+
 # On coloring pulse &amp; group interaction
-m4b &lt;- lm(After_color_BP_Pul ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys + Group + B4_color_BP_Pul * Group, data=d2)
+m4 &lt;- lm(col_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)
 
-stargazer(m3, m4, m4b, type = &quot;text&quot;)</code></pre>
+stargazer(m1, m2, m3, m4, type = &quot;text&quot;)</code></pre>
 <pre><code>## 
-## ================================================================================================
-##                                                         Dependent variable:                     
-##                                    -------------------------------------------------------------
-##                                              After_color_BP_Sys             After_color_BP_Pul  
-##                                           (1)                 (2)                   (3)         
-## ------------------------------------------------------------------------------------------------
-## pre_existing_BP                          8.118               5.163                -3.876        
-##                                        (13.068)             (5.756)               (3.369)       
-##                                                                                                 
-## Years_practice                           0.082              -0.068                -0.075        
-##                                         (0.368)             (0.168)               (0.095)       
-##                                                                                                 
-## caffeinated_drinks                      -7.622              -3.880                 2.190        
-##                                         (5.877)             (2.934)               (1.809)       
-##                                                                                                 
-## hours_since_last_caffeinated_drink      -0.880              -0.593*                0.251        
-##                                         (0.515)             (0.307)               (0.182)       
-##                                                                                                 
-## B4_color_BP_Sys                          0.525              0.541**               0.238*        
-##                                         (0.367)             (0.254)               (0.127)       
-##                                                                                                 
-## Group                                                       -22.247                3.971        
-##                                                            (40.520)              (17.858)       
-##                                                                                                 
-## B4_color_BP_Sys:Group                                        0.186                              
-##                                                             (0.351)                             
-##                                                                                                 
-## B4_color_BP_Pul                                                                  0.636***       
-##                                                                                   (0.182)       
-##                                                                                                 
-## Group:B4_color_BP_Pul                                                             -0.024        
-##                                                                                   (0.243)       
-##                                                                                                 
-## Constant                                49.096              47.462                 0.709        
-##                                        (46.619)            (31.537)              (16.530)       
-##                                                                                                 
-## ------------------------------------------------------------------------------------------------
-## Observations                              14                  29                    29          
-## R2                                       0.443               0.613                 0.744        
-## Adjusted R2                              0.095               0.484                 0.641        
-## Residual Std. Error                 13.141 (df = 8)     9.356 (df = 21)       5.449 (df = 20)   
-## F Statistic                        1.274 (df = 5; 8) 4.758*** (df = 7; 21) 7.257*** (df = 8; 20)
-## ================================================================================================
-## Note:                                                                *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+## ======================================================================================
+##                                                    Dependent variable:                
+##                                    ---------------------------------------------------
+##                                    med_sys_diff med_pul_diff col_sys_diff col_pul_diff
+##                                        (1)          (2)          (3)          (4)     
+## --------------------------------------------------------------------------------------
+## pre_existing_BP                       0.048        0.228        1.415        -1.115   
+##                                      (3.834)      (2.619)      (4.535)      (3.265)   
+##                                                                                       
+## Years_practice                       -0.351*       0.049        -0.028       -0.185   
+##                                      (0.183)      (0.125)      (0.216)      (0.156)   
+##                                                                                       
+## Group                                 -3.984      -6.879**      5.550        -2.058   
+##                                      (3.992)      (2.727)      (4.722)      (3.399)   
+##                                                                                       
+## caffeinated_drinks                    2.429        1.606        -3.528       -0.081   
+##                                      (2.616)      (1.787)      (3.095)      (2.228)   
+##                                                                                       
+## hours_since_last_caffeinated_drink    0.497*       0.345*       -0.495       0.152    
+##                                      (0.267)      (0.183)      (0.316)      (0.228)   
+##                                                                                       
+## Years_practice:Group                 0.535**       0.168        -0.240       0.302    
+##                                      (0.241)      (0.165)      (0.285)      (0.205)   
+##                                                                                       
+## Constant                             -11.062       -2.816       -2.044       0.695    
+##                                      (9.423)      (6.438)      (11.147)     (8.024)   
+##                                                                                       
+## --------------------------------------------------------------------------------------
+## Observations                            29           29           29           29     
+## R2                                    0.308        0.339        0.180        0.123    
+## Adjusted R2                           0.119        0.159        -0.044       -0.116   
+## Residual Std. Error (df = 22)         8.265        5.647        9.778        7.039    
+## F Statistic (df = 6; 22)              1.629        1.883        0.804        0.515    
+## ======================================================================================
+## Note:                                                      *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
 </div>
 </div>
 <div id="generalization" class="section level1">
