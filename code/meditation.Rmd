@@ -133,29 +133,20 @@ d2$col_pul_diff = d2$After_color_BP_Pul - d2$B4_color_BP_Pul
 ```
 
 ### Models on meditation data
+##### Is this the correct interaction term: Years_practice * Group?
 
 ```{r}
-# On meditation Sys on treatment group
-#m1 <- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2[Group==1])
-
-#m2 <- lm(After_Med_BP_Sys ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_Sys , data=d2)
+# On meditation Sys
 m1 <- lm(med_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)
-#stargazer(m2, m2a, type = "text")
 
-# On meditation pulse on treatment group
-#m2b <- lm(After_Med_BP_PUL ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_Med_BP_PUL , data=d2)
-#summary(m2b)
+# On meditation pulse
 m2 <- lm(med_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)
-
-#stargazer(m1, m2, type = "text")
 ```
 
 ### Models on coloring data
 
 ```{r}
-# On coloring variables regardless of group
-#m3 <- lm(After_color_BP_Sys ~ pre_existing_BP + Years_practice + caffeinated_drinks + hours_since_last_caffeinated_drink + B4_color_BP_Sys, data=d2[Group== 0])
-
+# On coloring systolic
 m3 <- lm(col_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)
 
 # On coloring pulse & group interaction
