@@ -5,6 +5,28 @@ output:
   html_document: default
   pdf_document: default
 ---
+
+##Abstract:
+
+
+##Introduction:
+####What is the question we are trying to answer? 
+####Why does it matter?
+#####Dangers of high blood pressure
+#####Systolic vs Diastolic Blood Pressure vs Pulse
+####Background on Meditation studies
+####Experiment
+#####Overview
+#####Considerations
+######Why within-subject design
+######Why coloring
+#####Challenges
+######Constrained by subject inexperience (15 minute meditations only)
+######Constrained by subject willingness (single experiment in one sitting, rather than successive days)
+
+##Experimental Design:
+
+##Data:
 ```{r}
 library(data.table)
 library(sandwich)
@@ -81,7 +103,7 @@ legend(x=100,y=175, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 
 ##### Choice of outcome variables: How do we use other After_*_BP* variables?
 
-##### How to check for covariate balances?
+##Covariate Balance Check
 
 ```{r}
 cat("Age Covariate Balance:\n")
@@ -118,6 +140,7 @@ cat("\nIn Person vs Online Covariate Balance:\n")
 
 ```
 
+##Model Building:
 ##### Coloring first (group 0): placebo
 ##### Meditation first (group 1): treatment
 
@@ -154,6 +177,10 @@ m4 <- lm(col_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practic
 
 stargazer(m1, m2, m3, m4, type = "text")
 ```
-# Generalization
+
+##Summary
+###Conclusions
+###Generalization
 ##### Can't generalize from this finding because:
 ##### Subjects are our friends and relatives. This sample is not randomized from the general population therefore doesn't represent the population's distribution
+###Future Research
