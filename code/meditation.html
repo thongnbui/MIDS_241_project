@@ -122,6 +122,56 @@ $(document).ready(function () {
 </div>
 
 
+<div id="abstract" class="section level2">
+<h2>Abstract:</h2>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction:</h2>
+<div id="what-is-the-question-we-are-trying-to-answer" class="section level4">
+<h4>What is the question we are trying to answer?</h4>
+</div>
+<div id="why-does-it-matter" class="section level4">
+<h4>Why does it matter?</h4>
+<div id="dangers-of-high-blood-pressure" class="section level5">
+<h5>Dangers of high blood pressure</h5>
+</div>
+<div id="systolic-vs-diastolic-blood-pressure-vs-pulse" class="section level5">
+<h5>Systolic vs Diastolic Blood Pressure vs Pulse</h5>
+</div>
+</div>
+<div id="background-on-meditation-studies" class="section level4">
+<h4>Background on Meditation studies</h4>
+</div>
+<div id="experiment" class="section level4">
+<h4>Experiment</h4>
+<div id="overview" class="section level5">
+<h5>Overview</h5>
+</div>
+<div id="considerations" class="section level5">
+<h5>Considerations</h5>
+<div id="why-within-subject-design" class="section level6">
+<h6>Why within-subject design</h6>
+</div>
+<div id="why-coloring" class="section level6">
+<h6>Why coloring</h6>
+</div>
+</div>
+<div id="challenges" class="section level5">
+<h5>Challenges</h5>
+<div id="constrained-by-subject-inexperience-15-minute-meditations-only" class="section level6">
+<h6>Constrained by subject inexperience (15 minute meditations only)</h6>
+</div>
+<div id="constrained-by-subject-willingness-single-experiment-in-one-sitting-rather-than-successive-days" class="section level6">
+<h6>Constrained by subject willingness (single experiment in one sitting, rather than successive days)</h6>
+</div>
+</div>
+</div>
+</div>
+<div id="experimental-design" class="section level2">
+<h2>Experimental Design:</h2>
+</div>
+<div id="data" class="section level2">
+<h2>Data:</h2>
 <pre class="r"><code>library(data.table)
 library(sandwich)
 library(lmtest)</code></pre>
@@ -137,6 +187,7 @@ library(lmtest)</code></pre>
 <pre><code>##  Hlavac, Marek (2015). stargazer: Well-Formatted Regression and Summary Statistics Tables.</code></pre>
 <pre><code>##  R package version 5.2. http://CRAN.R-project.org/package=stargazer</code></pre>
 <pre class="r"><code>library(RColorBrewer)</code></pre>
+</div>
 <div id="exploring-data" class="section level2">
 <h2>Exploring data</h2>
 <p>Description our subjects (friends and family) ##### How do we use Pre_existing_blood_pressure into our model? Convert it to 1 (low),2 (avg),3 (high)?</p>
@@ -185,7 +236,7 @@ d2 &lt;- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th person
              caffeinated_drinks,
              Years_practice,
              hours_since_last_caffeinated_drink,
-             is_online = ifelse(Online_in_person == 'O', 1, 0),
+             in_person = ifelse(Online_in_person == 'I', 1, 0),
 #             Pre_existing_blood_pressure,
              pre_existing_BP = ifelse(Pre_existing_blood_pressure == 'Low', 1, 
                                       ifelse(Pre_existing_blood_pressure == 'Avg', 2, 3)),
@@ -202,11 +253,11 @@ summary(d2)</code></pre>
 ##  Mean   :0.5484   Mean   :1.339      Mean   : 9.645  
 ##  3rd Qu.:1.0000   3rd Qu.:2.000      3rd Qu.:20.500  
 ##  Max.   :1.0000   Max.   :6.000      Max.   :47.000  
-##  hours_since_last_caffeinated_drink   is_online      pre_existing_BP
+##  hours_since_last_caffeinated_drink   in_person      pre_existing_BP
 ##  Min.   : 0.700                     Min.   :0.0000   Min.   :1.000  
 ##  1st Qu.: 2.500                     1st Qu.:0.0000   1st Qu.:2.000  
-##  Median : 6.000                     Median :0.0000   Median :2.000  
-##  Mean   : 9.587                     Mean   :0.4194   Mean   :2.065  
+##  Median : 6.000                     Median :1.0000   Median :2.000  
+##  Mean   : 9.587                     Mean   :0.5806   Mean   :2.065  
 ##  3rd Qu.:17.500                     3rd Qu.:1.0000   3rd Qu.:2.000  
 ##  Max.   :24.000                     Max.   :1.0000   Max.   :3.000  
 ##  B4_Med_BP_Sys   B4_Med_BP_PUL   After_Med_BP_Sys After_Med_BP_PUL
@@ -259,8 +310,9 @@ legend(x=100,y=175, legend=c(&quot;Group 1: meditation&quot;, &quot;Group 0: col
 <div id="choice-of-outcome-variables-how-do-we-use-other-after__bp-variables" class="section level5">
 <h5>Choice of outcome variables: How do we use other After_*_BP* variables?</h5>
 </div>
-<div id="how-to-check-for-covariate-balances" class="section level5">
-<h5>How to check for covariate balances?</h5>
+</div>
+<div id="covariate-balance-check" class="section level2">
+<h2>Covariate Balance Check</h2>
 <pre class="r"><code>cat(&quot;Age Covariate Balance:\n&quot;)</code></pre>
 <pre><code>## Age Covariate Balance:</code></pre>
 <pre class="r"><code>(cov_table_age = table(d$Group, d$Age_Group))</code></pre>
@@ -337,6 +389,8 @@ legend(x=100,y=175, legend=c(&quot;Group 1: meditation&quot;, &quot;Group 0: col
 ##   0  7 10
 ##   1 11  4</code></pre>
 </div>
+<div id="model-building" class="section level2">
+<h2>Model Building:</h2>
 <div id="coloring-first-group-0-placebo" class="section level5">
 <h5>Coloring first (group 0): placebo</h5>
 </div>
@@ -359,19 +413,19 @@ d2$col_pul_diff = d2$After_color_BP_Pul - d2$B4_color_BP_Pul
 <div id="is-this-the-correct-interaction-term-years_practice-group" class="section level5">
 <h5>Is this the correct interaction term: Years_practice * Group?</h5>
 <pre class="r"><code># On meditation Sys
-m1 &lt;- lm(med_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)
+m1 &lt;- lm(med_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
 
 # On meditation pulse
-m2 &lt;- lm(med_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)</code></pre>
+m2 &lt;- lm(med_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)</code></pre>
 </div>
 </div>
 <div id="models-on-coloring-data" class="section level3">
 <h3>Models on coloring data</h3>
 <pre class="r"><code># On coloring systolic
-m3 &lt;- lm(col_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)
+m3 &lt;- lm(col_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
 
 # On coloring pulse &amp; group interaction
-m4 &lt;- lm(col_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink, data=d2)
+m4 &lt;- lm(col_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
 
 stargazer(m1, m2, m3, m4, type = &quot;text&quot;)</code></pre>
 <pre><code>## 
@@ -381,44 +435,56 @@ stargazer(m1, m2, m3, m4, type = &quot;text&quot;)</code></pre>
 ##                                    med_sys_diff med_pul_diff col_sys_diff col_pul_diff
 ##                                        (1)          (2)          (3)          (4)     
 ## --------------------------------------------------------------------------------------
-## pre_existing_BP                       0.215        0.800        0.903        -0.921   
-##                                      (3.639)      (2.556)      (4.316)      (3.151)   
+## pre_existing_BP                       -0.476       0.766        1.646        0.271    
+##                                      (3.809)      (2.704)      (4.527)      (3.193)   
 ##                                                                                       
-## Years_practice                       -0.349*       0.052        -0.031       -0.182   
-##                                      (0.176)      (0.124)      (0.209)      (0.152)   
+## Years_practice                       -0.440*       0.047        0.068        -0.025   
+##                                      (0.221)      (0.157)      (0.263)      (0.185)   
 ##                                                                                       
-## Group                                 -4.623     -7.392***      6.091        -3.055   
-##                                      (3.677)      (2.583)      (4.361)      (3.184)   
+## Group                                 -5.470      -7.434**      7.001        -1.595   
+##                                      (3.909)      (2.775)      (4.646)      (3.277)   
 ##                                                                                       
-## caffeinated_drinks                    2.284        -0.120       -2.045       -0.065   
-##                                      (1.501)      (1.054)      (1.780)      (1.300)   
+## caffeinated_drinks                    2.090        -0.130       -1.836       0.270    
+##                                      (1.543)      (1.095)      (1.833)      (1.293)   
 ##                                                                                       
-## hours_since_last_caffeinated_drink   0.461**       0.215        -0.379       0.110    
-##                                      (0.212)      (0.149)      (0.252)      (0.184)   
+## hours_since_last_caffeinated_drink   0.454**       0.215        -0.373       0.121    
+##                                      (0.215)      (0.153)      (0.255)      (0.180)   
 ##                                                                                       
-## Years_practice:Group                 0.554**       0.214        -0.282       0.328    
-##                                      (0.226)      (0.159)      (0.268)      (0.196)   
+## in_person                             -2.942       -0.148       3.164        5.074    
+##                                      (4.212)      (2.990)      (5.006)      (3.531)   
 ##                                                                                       
-## Constant                             -10.882       -0.972       -3.633       0.722    
-##                                      (8.824)      (6.200)      (10.467)     (7.641)   
+## Years_practice:Group                 0.600**       0.216        -0.331       0.250    
+##                                      (0.237)      (0.169)      (0.282)      (0.199)   
+##                                                                                       
+## Constant                              -6.397       -0.747       -8.455       -7.012   
+##                                      (10.991)     (7.802)      (13.061)     (9.212)   
 ##                                                                                       
 ## --------------------------------------------------------------------------------------
 ## Observations                            31           31           31           31     
-## R2                                    0.313        0.369        0.170        0.119    
-## Adjusted R2                           0.141        0.211        -0.038       -0.101   
-## Residual Std. Error (df = 24)         7.967        5.597        9.451        6.899    
-## F Statistic (df = 6; 24)              1.818        2.340*       0.818        0.543    
+## R2                                    0.327        0.369        0.184        0.192    
+## Adjusted R2                           0.122        0.177        -0.064       -0.054   
+## Residual Std. Error (df = 23)         8.054        5.717        9.571        6.750    
+## F Statistic (df = 7; 23)              1.595        1.922        0.741        0.781    
 ## ======================================================================================
 ## Note:                                                      *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
 </div>
 </div>
-<div id="generalization" class="section level1">
-<h1>Generalization</h1>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<div id="conclusions" class="section level3">
+<h3>Conclusions</h3>
+</div>
+<div id="generalization" class="section level3">
+<h3>Generalization</h3>
 <div id="cant-generalize-from-this-finding-because" class="section level5">
 <h5>Can’t generalize from this finding because:</h5>
 </div>
 <div id="subjects-are-our-friends-and-relatives.-this-sample-is-not-randomized-from-the-general-population-therefore-doesnt-represent-the-populations-distribution" class="section level5">
 <h5>Subjects are our friends and relatives. This sample is not randomized from the general population therefore doesn’t represent the population’s distribution</h5>
+</div>
+</div>
+<div id="future-research" class="section level3">
+<h3>Future Research</h3>
 </div>
 </div>
 
