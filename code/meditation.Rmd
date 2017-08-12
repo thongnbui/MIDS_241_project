@@ -89,6 +89,9 @@ d <- data.table(d)
 d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th person
 #d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0),
              caffeinated_drinks,
+             Age_Group,
+             Gender,
+             Religion,
              Years_practice,
              hours_since_last_caffeinated_drink,
 #             hours_since_last_caffeinated_drink = ifelse(caffeinated_drinks == 0, NA, hours_since_last_caffeinated_drink),
@@ -142,6 +145,7 @@ legend(x=100,y=175, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 ##Covariate Balance Check
 
 ```{r}
+d <- d[ID != 13]
 cat("Age Covariate Balance:\n")
 (cov_table_age = table(d$Group, d$Age_Group))
 
