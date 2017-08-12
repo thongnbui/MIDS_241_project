@@ -10,19 +10,19 @@ output:
 
 
 ##Introduction:
-####What is the question we are trying to answer? 
-####Why does it matter?
-#####Dangers of high blood pressure
-#####Systolic vs Diastolic Blood Pressure vs Pulse
-####Background on Meditation studies
-####Experiment
-#####Overview
-#####Considerations
-######Why within-subject design
-######Why coloring
-#####Challenges
-######Constrained by subject inexperience (15 minute meditations only)
-######Constrained by subject willingness (single experiment in one sitting, rather than successive days)
+###What is the question we are trying to answer? 
+###Why does it matter?
+####Dangers of high blood pressure
+####Systolic vs Diastolic Blood Pressure vs Pulse
+###Background on Meditation studies
+###Experiment
+####Overview
+####Considerations
+#####Why within-subject design
+#####Why coloring
+####Challenges
+#####Constrained by subject inexperience (15 minute meditations only)
+#####Constrained by subject willingness (single experiment in one sitting, rather than successive days)
 
 ##Experimental Design:
 
@@ -39,7 +39,6 @@ library(RColorBrewer)
 ## Exploring data
 
 Description our subjects (friends and family)
-##### How do we use Pre_existing_blood_pressure into our model? Convert it to 1 (low),2 (avg),3 (high)?
 
 
 ```{r}
@@ -55,7 +54,7 @@ d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th person
 #d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0),
              caffeinated_drinks,
              Years_practice,
-             hours_since_last_caffeinated_drink,
+             hours_since_last_caffeinated_drink = ifelse(caffeinated_drinks == 0, NA, hours_since_last_caffeinated_drink),
              in_person = ifelse(Online_in_person == 'I', 1, 0),
 #             Pre_existing_blood_pressure,
              pre_existing_BP = ifelse(Pre_existing_blood_pressure == 'Low', 1, 
