@@ -21,6 +21,7 @@ output:
 #####Why within-subject design
 #####Why coloring
 ####Challenges
+#####BP measurement device precission vs incorrect use of the device for online people?
 #####Constrained by subject inexperience (15 minute meditations only)
 #####Constrained by subject willingness (single experiment in one sitting, rather than successive days)
 
@@ -40,7 +41,6 @@ library(RColorBrewer)
 
 Description our subjects (friends and family)
 
-
 ```{r}
 d <- fread("../data/meditation.csv")
 # Should be 30 subjects
@@ -54,7 +54,8 @@ d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th person
 #d2 <- d[ , .(Group = ifelse(Group == 0, 1, 0),
              caffeinated_drinks,
              Years_practice,
-             hours_since_last_caffeinated_drink = ifelse(caffeinated_drinks == 0, NA, hours_since_last_caffeinated_drink),
+             hours_since_last_caffeinated_drink,
+#             hours_since_last_caffeinated_drink = ifelse(caffeinated_drinks == 0, NA, hours_since_last_caffeinated_drink),
              in_person = ifelse(Online_in_person == 'I', 1, 0),
 #             Pre_existing_blood_pressure,
              pre_existing_BP = ifelse(Pre_existing_blood_pressure == 'Low', 1, 
@@ -142,6 +143,14 @@ cat("\nIn Person vs Online Covariate Balance:\n")
 ##Model Building:
 ##### Coloring first (group 0): placebo
 ##### Meditation first (group 1): treatment
+##### Outcome variables: med_sys_diff, col_sys_diff
+##### Covariates: 
+* pre_existing_BP, 
+* Group: 1 means meditation first, 0 means coloring first
+* Years_practice, 
+* caffeinated_drinks, 
+* hours_since_last_caffeinated_drink, 
+* in_person
 
 ##### ATE between meditation vs color
 ```{r}
@@ -176,9 +185,22 @@ m4 <- lm(col_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practic
 
 stargazer(m1, m2, m3, m4, type = "text")
 ```
+##### Results:
+* From high-level, while the coefficients show mostly decreases in blood pressure (BP) and pulses in both coloring and mediation exercises, the 4 models show lots of the coefficients are NOT statistically significant so we can't determine any causal effects from them
+
+Now, let's look at the models' covariates with statistical significance:
+
+* m1 - difference in BP after meditation: hours_since_last_caffeinated_drink increases BP by 0.454 which is a small number. Interaction term Years_practice:Group means that in group 1 (meditation first), number of years of meditation increases BP by 0.6 which is also a small amount. The other variables mostly show decreases in BP but we can't rely on them to draw causal inference because they are NOT statistically significant
+
+* m2 - difference in pulse after meditation: for Group 1, the pulse decreases by 7.434. 
+
+* m3 - difference in BP after coloring: there are no statistically significant coefficients here
+
+* m4 - difference in pulse after coloring: also no statistically significant coefficients
 
 ##Summary
 ###Conclusions
+
 ###Generalization
 ##### Can't generalize from this finding because:
 ##### Subjects are our friends and relatives. This sample is not randomized from the general population therefore doesn't represent the population's distribution
