@@ -104,7 +104,7 @@ d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th and 21st 
              Post_Med_focus,
              Enjoy_Coloring,
              in_person = ifelse(Online_in_person == 'I', 1, 0),
-             Pre_existing_blood_pressure,
+             pre_existing_BP = Pre_existing_blood_pressure,
              B4_Med_BP_Sys, B4_Med_BP_PUL,
              After_Med_BP_Sys, After_Med_BP_PUL,
              B4_color_BP_Sys, B4_color_BP_Pul, 
