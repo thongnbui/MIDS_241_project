@@ -94,6 +94,8 @@ d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th person
              Religion,
              Years_practice,
              hours_since_last_caffeinated_drink,
+             previous_strenuous_activity,
+             Before_Meditation_how_relaxed,
 #             hours_since_last_caffeinated_drink = ifelse(caffeinated_drinks == 0, NA, hours_since_last_caffeinated_drink),
              in_person = ifelse(Online_in_person == 'I', 1, 0),
 #             Pre_existing_blood_pressure,
@@ -120,21 +122,21 @@ hist(d2$After_color_BP_Sys, breaks = 30)
 cols<-brewer.pal(n=3,name="Set1")
 # Note: Group 0 is treatment group!
 cols_t1<-cols[d2$Group+1]
-med_diff <- d2$B4_Med_BP_Sys - d2$After_Med_BP_Sys
-color_diff <-  d2$B4_color_BP_Sys - d2$After_color_BP_Sys
+med_diff <-  d2$After_Med_BP_Sys - d2$B4_Med_BP_Sys
+color_diff <-   d2$After_color_BP_Sys - d2$B4_color_BP_Sys
 par(mfrow =c(1,2))
 plot(d2$Group ~ med_diff , col=cols_t1, pch=16)
-legend("center",legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16)
+legend("center",legend=c("Group 1: med-first", "Group 0: color-first"), col=cols_t1, pch=16)
 plot(d2$Group ~ color_diff , col=cols_t1, pch=16)
-legend("center",legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16)
+legend("center",legend=c("Group 1: med-first", "Group 0: color-first"), col=cols_t1, pch=16)
 
 # Plot b4 vs after meditation for 2 groups
 plot(After_Med_BP_Sys ~ B4_Med_BP_Sys, data=d2 , col=cols_t1, pch=16)
-legend(x=98,y=200, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+legend(x=98,y=200, legend=c("Group 1: med-first", "Group 0: color-first"), col=cols_t1, pch=16, xpd=TRUE)
 
 # Plot b4 vs after coloring for 2 groups
 plot(After_color_BP_Sys ~ B4_color_BP_Sys, data=d2 , col=cols_t1, pch=16)
-legend(x=100,y=175, legend=c("Group 1: meditation", "Group 0: coloring"), col=cols_t1, pch=16, xpd=TRUE)
+legend(x=100,y=175, legend=c("Group 1: med-first", "Group 0: color-first"), col=cols_t1, pch=16, xpd=TRUE)
 
 ```
 
@@ -145,38 +147,37 @@ legend(x=100,y=175, legend=c("Group 1: meditation", "Group 0: coloring"), col=co
 ##Covariate Balance Check
 
 ```{r}
-d <- d[ID != 13]
 cat("Age Covariate Balance:\n")
-(cov_table_age = table(d$Group, d$Age_Group))
+(cov_table_age = table(d2$Group, d2$Age_Group))
 
 cat("\nGender Covariate Balance:\n")
-(cov_table_age = table(d$Group, d$Gender))
+(cov_table_age = table(d2$Group, d2$Gender))
 
 cat("\nReligion Covariate Balance:\n")
-(cov_table_age = table(d$Group, d$Religion))
+(cov_table_age = table(d2$Group, d2$Religion))
 
 cat("\nMeditation Experience Covariate Balance:\n")
-d <- transform(d, experience=cut(Years_practice,  
+d2 <- transform(d2, experience=cut(Years_practice,  
                               breaks=c(-1,1, 10, 25, 50),
                              labels= c(0,10, 25, 50)))
-(col_table_years = table(d$Group, d$experience))
+(col_table_years = table(d2$Group, d2$experience))
 
 cat("\nPre-existing Blood Pressure Covariate Balance:\n")
-(cov_pre_bp = table(d$Group, d$Pre_existing_blood_pressure))
+(cov_pre_bp = table(d2$Group, d2$pre_existing_BP))
 
 cat("\nCaffeinated Drinks Covariate Balance:\n")
-(cov_caff = table(d$Group[d$hours_since_last_caffeinated_drink < 2],
-                    d$caffeinated_drinks[d$hours_since_last_caffeinated_drink < 2]))
+(cov_caff = table(d2$Group[d2$hours_since_last_caffeinated_drink < 2],
+                    d2$caffeinated_drinks[d2$hours_since_last_caffeinated_drink < 2]))
 
 cat("\nPrevious Activity Covariate Balance:\n")
-(cov_pre_bp = table(d$Group, d$previous_strenuous_activity))
+(cov_pre_bp = table(d2$Group, d2$previous_strenuous_activity))
 
 
 cat("\nPrevious Relaxation Covariate Balance:\n")
-(cov_pre_bp = table(d$Group, d$Before_Meditation_how_relaxed))
+(cov_pre_bp = table(d2$Group, d2$Before_Meditation_how_relaxed))
 
 cat("\nIn Person vs Online Covariate Balance:\n")
-(cov_online = table(d$Group, d$Online_in_person))
+(cov_online = table(d2$Group, d2$in_person))
 
 ```
 
@@ -202,7 +203,49 @@ d2$med_pul_diff = d2$After_Med_BP_PUL - d2$B4_Med_BP_PUL
 d2$col_pul_diff = d2$After_color_BP_Pul - d2$B4_color_BP_Pul
 (ate_col_diff = mean(d2$med_pul_diff, na.rm=TRUE) - mean(d2$col_pul_diff, na.rm=TRUE))
 ```
+##### ATE between meditation vs color by Group. Did we leave enough time for a washout?
+```{r}
+cat("Med-first Group Systolic Difference:\n")
+(ate_group_1_diff = mean(d2$med_sys_diff[d$Group==TRUE], na.rm=TRUE) - 
+   mean(d2$col_sys_diff[d2$Group==TRUE], na.rm=TRUE))
 
+cat("Color-first Group Systolic Difference:\n")
+(ate_group_0_diff = mean(d2$col_sys_diff[d$Group==FALSE], na.rm=TRUE) - 
+   mean(d2$med_sys_diff[d2$Group==FALSE], na.rm=TRUE))
+
+cat("Med-first Group Pulse Difference:\n")
+(ate_group_1_diff = mean(d2$med_pul_diff[d$Group==TRUE], na.rm=TRUE) - 
+   mean(d2$col_pul_diff[d2$Group==TRUE], na.rm=TRUE))
+
+cat("Color-first Group Pulse Difference:\n")
+(ate_group_0_diff = mean(d2$col_pul_diff[d$Group==FALSE], na.rm=TRUE) - 
+   mean(d2$med_pul_diff[d2$Group==FALSE], na.rm=TRUE))
+```
+
+##### Diff from baseline Models: Meditation
+```{r}
+cat("Meditation systolic difference by Group, Experience, Age, Religion and Gender \n")
+e_mod = lm(med_sys_diff~B4_Med_BP_Sys+Group+experience + Age_Group + Religion + Gender + pre_existing_BP, 
+           data = d2)
+summary(e_mod)
+
+cat("Meditation pulse difference by Group, Experience, Age, Religion and Gender \n")
+e_mod = lm(med_pul_diff~B4_Med_BP_PUL+Group+experience + Age_Group + Religion + Gender, 
+           data = d2)
+summary(e_mod)
+```
+##### Diff from baseline Models : Color
+```{r}
+cat("Meditation systolic difference by Group, Experience, Age, Religion and Gender \n")
+e_mod = lm(col_sys_diff~B4_Med_BP_Sys+Group+experience + Age_Group + Religion + Gender + pre_existing_BP, 
+           data = d2)
+summary(e_mod)
+
+cat("Meditation pulse difference by Group, Experience, Age, Religion and Gender \n")
+e_mod = lm(col_pul_diff~B4_Med_BP_PUL+Group+experience + Age_Group + Religion + Gender, 
+           data = d2)
+summary(e_mod)
+```
 ### Models on meditation data
 ##### Is this the correct interaction term: Years_practice * Group?
 

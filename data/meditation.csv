@@ -1,33 +1,33 @@
-ID,Group,Location,Age_Group,Gender,Religion,Pre_existing_blood_pressure,Years_practice,caffeinated_drinks,hours_since_last_caffeinated_drink,Online_in_person,Experiment_Date,Start_Time,previous_strenuous_activity,Before_Meditation_how_relaxed,B4_Med_BP_Sys,B4_Med_BP_DIA,B4_Med_BP_PUL,After_Med_BP_Sys,After_Med_BP_DIA,After_Med_BP_PUL,Post_Med_focus,B4_color_BP_Sys,B4_color_BP_DIA,B4_color_BP_Pul,After_color_BP_Sys,After_color_BP_DIA,After_color_BP_Pul,Enjoy_Coloring
-1,0,"San Diego, CA",40-49,F,Buddhist,Low,25,0.5,6,O,7/25/2017,3:00 PM,Yes,a little tense,112,71,55,96,59,59,4,108,64,54,94,64,59,2
-2,1,"Bellingham, WA",40-49,F,Buddhist,Avg,10,2,10,O,8/2/2017,8:00 PM,No,a little tense,107,59,74,110,61,75,3,122,64,79,101,57,75,3.5
-3,0,"Lopez Island, WA",50-59,M,Buddhist,Avg,45,2,6,O,7/23/2017,7:45 PM,Yes,relaxed,114,70,78,122,73,85,4,123,64,79,109,69,83,4
-4,1,"San Diego, CA",50-59,F,Spiritual,Low,47,1,3,O,7/23/2017,1:30 PM,Maybe (walking),relaxed,134,97,97,108,71,95,3,121,91,100,113,75,93,5
-5,0,"Redwood City, CA",50-59,F,Buddhist,Avg,24,3,5,I,7/26/2017,7:15 PM,No,relaxed,119,81,75,121,81,79,4,124,79,77,116,65,82,4
-6,1,"Palo Alto, CA",50-59,M,None,Avg,0,1,1,I,7/21/2017,3:10 PM,No,relaxed,131,92,76,125,88,76,3,128,89,79,130,92,72,2
-7,0,"Palo Alto, CA",40-49,M,Hindu,Avg,0,1,6,I,7/24/2017,2:05 PM,No,a little tense,108,69,71,111,70,64,4,111,70,63,110,72,68,4
-8,1,"Palo Alto, CA",50-59,F,Christian,High,0,1,6,I,7/21/2017,3:10 PM,Maybe (walking),relaxed,130,88,71,121,77,68,4,131,93,74,128,87,74,4
-9,0,"San Jose, CA",40-49,M,Agnostic,High,0,2,0.7,O,8/5/2017,3:15 PM,Yes,relaxed,127,84,90,106,77,89,4,126,87,91,128,82,88,4
-10,0,"Palo Alto, CA",30-39,M,Hindu,Avg,2,2,2,I,7/24/2017,1:00 PM,No,a little tense,114,78,81,96,62,79,3,116,81,85,111,75,77,4
-11,1,"Palo Alto, CA",30-39,M,None,Avg,1,2,2,I,7/21/2017,3:10 PM,No,a little tense,132,83,84,119,78,83,5,140,79,86,131,83,84,5
-12,1,"Sausalito, CA",40-49,F,None,Avg,25,0,24,O,7/23/2017,9:30 AM,No,a little tense,121,71,64,115,83,81,3,119,75,73,113,75,68,3
-13,1,"Healdsburg, CA",50-60,F,Christian/Buddhist,High,27,0,24,O,8/4/2017,10:09,Yes,a little tense,113,59,61,174,93,54,4,189,104,64,156,94,63,4
-14,0,San Francisco,40-50,M,None,Avg,17,3,1,I,7/30/2017,12:15 AM,No,relaxed,114,71,77,107,73,73,4,108,63,66,101,73,70,4
-15,0,"San Jose, CA",40-50,M,Buddhist,High,17,2,4.5,O,8/5/2017,3:05 PM,No,relaxed,135,79,78,133,80,83,4,135,77,80,126,75,80,4
-16,0,MA,60-70,F,Christian,High,25,1,8,O,8/3/2017,11:05,No,a little tense,138,91,61,134,80,57,4,136,80,58,121,81,57,3.5
-17,1,"Farmerville, LA",30-39,F,Christian,Avg,0,3,3,I,7/30/2017,5:45 PM,Yes,a little tense,109,71,70,104,62,76,2,114,77,73,99,61,74,4
-18,0,"Farmerville, LA",10-19,F,Christian,Avg,0,0,24,I,7/30/2017,5:45 PM,No,a little tense,103,59,71,96,50,71,2,100,58,69,101,66,77,3
-19,1,"Farmerville, LA",10-19,M,Christian,Avg,0,0,24,I,7/30/2017,5:45 PM,Yes,relaxed,94,52,68,101,37,81,3,99,71,68,97,68,64,4
-20,0,"Farmerville, LA",5-9,M,Christian,Avg,0,0,24,I,7/30/2017,5:45 PM,No,a little tense,100,63,75,95,61,71,2,98,71,81,92,68,77,4
-21,1,"Farmerville, LA",5-9,M,Christian,Avg,0,0,24,I,7/30/2017,5:45 PM,Yes,relaxed,101,70,70,85,50,85,4,131,66,75,85,48,72,5
-22,0,"Farmerville, LA",10-19,F,Christian,Avg,0,0,24,I,8/8/2017,9:30 PM,No,a little tense,119,75,67,111,74,64,2,118,85,73,115,79,65,4
-23,0,"Farmerville, LA",50-59,M,Christian,Avg,0,6,6,O,8/8/2017,10:18 PM,No,a little tense,126,83,68,127,80,58,3,125,77,64,118,73,60,2
-24,1,"San Francisco, CA",40-49,M,Buddhist,Avg,0,0,24,I,8/5/2017,11:17 AM,No,a little tense,117,80,72,124,90,66,3,114,83,67,115,81,77,2
-25,0,"Huntington Beach, Ca",80-90,M,Buddhist,Avg,25,2,5,O,7/30/2017,6:00 PM,No,a little tense,122,85,82,111,81,81,4,118,83,79,117,83,80,4
-26,0,"Huntington Beach, Ca",80-90,F,Buddhist,Avg,25,1,9,O,7/30/2017,6:00 PM,No,a little tense,120,51,62,116,51,59,3,108,49,59,99,47,53,4
-27,0,"Huntington Beach, Ca",50-60,M,Buddhist,Avg,0,1,11,O,7/30/2017,6:00 PM,No,relaxed,113,64,86,119,78,78,5,115,76,73,109,70,74,4
-28,1,"San Francisco, CA",40-50,M,None,Avg,0,1,2,I,8/5/2017,11:17 AM,No,relaxed,106,69,61,103,72,61,3,111,76,57,105,68,60,3
-29,1,"San Francisco, CA",40-50,M,None,Avg,0,0,24,I,8/5/2017,11:17 AM,No,relaxed,117,81,63,117,84,62,3,128,89,64,126,89,68,4
-30,1,"Oakland, CA",40-50,M,None,Avg,0,1,2,I,8/5/2017,11:16,No,relaxed,116,75,68,117,77,67,3,117,74,67,115,67,68,3
-31,0,"Irvine, CA",30-40,F,Buddhist,Avg,11,2,4,O,8/4/2017,8:30 PM,Yes,a little tense,92,62,94,96,54,93,2.5,92,55,100,87,43,74,4
-32,1,"Oakland, CA",40-50,M,None,Avg,0,1,2,I,8/5/2017,11:20,Yes,relaxed,138,81,72,128,84,78,3,113,71,78,118,79,76,3
+ID,Group,Recruited_By,Location,Age_Group,Gender,Religion,Pre_existing_blood_pressure,Years_practice,caffeinated_drinks,hours_since_last_caffeinated_drink,Online_in_person,Experiment_Date,Start_Time,previous_strenuous_activity,Before_Meditation_how_relaxed,B4_Med_BP_Sys,B4_Med_BP_DIA,B4_Med_BP_PUL,After_Med_BP_Sys,After_Med_BP_DIA,After_Med_BP_PUL,Post_Med_focus,B4_color_BP_Sys,B4_color_BP_DIA,B4_color_BP_Pul,After_color_BP_Sys,After_color_BP_DIA,After_color_BP_Pul,Enjoy_Coloring
+1,0,Erika,"San Diego, CA",40-49,F,Buddhist,Low,25,0.5,6,O,7/25/2017,3:00 PM,Yes,a little tense,112,71,55,96,59,59,4,108,64,54,94,64,59,2
+2,1,Erika,"Bellingham, WA",40-49,F,Buddhist,Avg,10,2,10,O,8/2/2017,8:00 PM,No,a little tense,107,59,74,110,61,75,3,122,64,79,101,57,75,3.5
+3,0,Erika,"Lopez Island, WA",50-59,M,Buddhist,Avg,45,2,6,O,7/23/2017,7:45 PM,Yes,relaxed,114,70,78,122,73,85,4,123,64,79,109,69,83,4
+4,1,Erika,"San Diego, CA",50-59,F,Spiritual,Low,47,1,3,O,7/23/2017,1:30 PM,Maybe (walking),relaxed,134,97,97,108,71,95,3,121,91,100,113,75,93,5
+5,0,Erika,"Redwood City, CA",50-59,F,Buddhist,Avg,24,3,5,I,7/26/2017,7:15 PM,No,relaxed,119,81,75,121,81,79,4,124,79,77,116,65,82,4
+6,1,Erika,"Palo Alto, CA",50-59,M,None,Avg,0,1,1,I,7/21/2017,3:10 PM,No,relaxed,131,92,76,125,88,76,3,128,89,79,130,92,72,2
+7,0,Erika,"Palo Alto, CA",40-49,M,Hindu,Avg,0,1,6,I,7/24/2017,2:05 PM,No,a little tense,108,69,71,111,70,64,4,111,70,63,110,72,68,4
+8,1,Erika,"Palo Alto, CA",50-59,F,Christian,High,0,1,6,I,7/21/2017,3:10 PM,Maybe (walking),relaxed,130,88,71,121,77,68,4,131,93,74,128,87,74,4
+9,0,Thong,"San Jose, CA",40-49,M,Agnostic,High,0,2,0.7,O,8/5/2017,3:15 PM,Yes,relaxed,127,84,90,106,77,89,4,126,87,91,128,82,88,4
+10,0,Erika,"Palo Alto, CA",30-39,M,Hindu,Avg,2,2,2,I,7/24/2017,1:00 PM,No,a little tense,114,78,81,96,62,79,3,116,81,85,111,75,77,4
+11,1,Erika,"Palo Alto, CA",30-39,M,None,Avg,1,2,2,I,7/21/2017,3:10 PM,No,a little tense,132,83,84,119,78,83,5,140,79,86,131,83,84,5
+12,1,Erika,"Sausalito, CA",40-49,F,None,Avg,25,0,24,O,7/23/2017,9:30 AM,No,a little tense,121,71,64,115,83,81,3,119,75,73,113,75,68,3
+13,1,Thong,"Healdsburg, CA",50-59,F,Christian/Buddhist,High,27,0,24,O,8/4/2017,10:09,Yes,a little tense,113,59,61,174,93,54,4,189,104,64,156,94,63,4
+14,0,Thong,San Francisco,40-49,M,None,Avg,17,3,1,I,7/30/2017,12:15 AM,No,relaxed,114,71,77,107,73,73,4,108,63,66,101,73,70,4
+15,0,Thong,"San Jose, CA",40-49,M,Buddhist,High,17,2,4.5,O,8/5/2017,3:05 PM,No,relaxed,135,79,78,133,80,83,4,135,77,80,126,75,80,4
+16,0,Thong,MA,60-69,F,Christian,High,25,1,8,O,8/3/2017,11:05,No,a little tense,138,91,61,134,80,57,4,136,80,58,121,81,57,3.5
+17,1,Post,"Farmerville, LA",30-39,F,Christian,Avg,0,3,3,I,7/30/2017,5:45 PM,Yes,a little tense,109,71,70,104,62,76,2,114,77,73,99,61,74,4
+18,0,Post,"Farmerville, LA",10-19,F,Christian,Avg,0,0,24,I,7/30/2017,5:45 PM,No,a little tense,103,59,71,96,50,71,2,100,58,69,101,66,77,3
+19,1,Post,"Farmerville, LA",10-19,M,Christian,Avg,0,0,24,I,7/30/2017,5:45 PM,Yes,relaxed,94,52,68,101,37,81,3,99,71,68,97,68,64,4
+20,0,Post,"Farmerville, LA",5-9,M,Christian,Avg,0,0,24,I,7/30/2017,5:45 PM,No,a little tense,100,63,75,95,61,71,2,98,71,81,92,68,77,4
+21,1,Post,"Farmerville, LA",5-9,M,Christian,Avg,0,0,24,I,7/30/2017,5:45 PM,Yes,relaxed,101,70,70,85,50,85,4,131,66,75,85,48,72,5
+22,0,Post,"Farmerville, LA",10-19,F,Christian,Avg,0,0,24,I,8/8/2017,9:30 PM,No,a little tense,119,75,67,111,74,64,2,118,85,73,115,79,65,4
+23,0,Post,"Farmerville, LA",50-59,M,Christian,Avg,0,6,6,O,8/8/2017,10:18 PM,No,a little tense,126,83,68,127,80,58,3,125,77,64,118,73,60,2
+24,1,Thong,"San Francisco, CA",40-49,M,Buddhist,Avg,0,0,24,I,8/5/2017,11:17 AM,No,a little tense,117,80,72,124,90,66,3,114,83,67,115,81,77,2
+25,0,Thong,"Huntington Beach, Ca",80-90,M,Buddhist,Avg,25,2,5,O,7/30/2017,6:00 PM,No,a little tense,122,85,82,111,81,81,4,118,83,79,117,83,80,4
+26,0,Thong,"Huntington Beach, Ca",80-90,F,Buddhist,Avg,25,1,9,O,7/30/2017,6:00 PM,No,a little tense,120,51,62,116,51,59,3,108,49,59,99,47,53,4
+27,0,Thong,"Huntington Beach, Ca",50-59,M,Buddhist,Avg,0,1,11,O,7/30/2017,6:00 PM,No,relaxed,113,64,86,119,78,78,5,115,76,73,109,70,74,4
+28,1,Thong,"San Francisco, CA",40-49,M,None,Avg,0,1,2,I,8/5/2017,11:17 AM,No,relaxed,106,69,61,103,72,61,3,111,76,57,105,68,60,3
+29,1,Thong,"San Francisco, CA",40-49,M,None,Avg,0,0,24,I,8/5/2017,11:17 AM,No,relaxed,117,81,63,117,84,62,3,128,89,64,126,89,68,4
+30,1,Thong,"Oakland, CA",40-49,M,None,Avg,0,1,2,I,8/5/2017,11:16,No,relaxed,116,75,68,117,77,67,3,117,74,67,115,67,68,3
+31,0,Erika,"Irvine, CA",30-39,F,Buddhist,Avg,11,2,4,O,8/4/2017,8:30 PM,Yes,a little tense,92,62,94,96,54,93,2.5,92,55,100,87,43,74,4
+32,1,Thong,"Oakland, CA",40-49,M,None,Avg,0,1,2,I,8/5/2017,11:20,Yes,relaxed,138,81,72,128,84,78,3,113,71,78,118,79,76,3
