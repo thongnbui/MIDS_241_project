@@ -1,0 +1,353 @@
+---
+title: '241 Project (Summer 2017): Effect of Meditation on Blood Pressure'
+author: "Erika Lawrence, Thong Bui, Matt Post"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+this is a note
+##Abstract:
+We examime the effects of meditation on blood pressure and pulse rates. In particular, using a within-subject experimental design, we compare the effects of a single fifteen-minute meditation session to a similar session of coloring geographic shapes. Subjects were randomly assigned to undergo either the meditation session first, followed by coloring, or the coloring session first, followed by meditation. In each case, a five-minute washout period was inserted between the sessions.  
+
+We find that while both meditation and coloring have a significant lowering effect on blood pressure and pulse, the coloring sessions have a greater effect. 
+
+##Introduction:
+Meditation has been used for thousands of years by religious practitioners for spiritual growth. In modern times, it is promoted as a means to reduce stress. Many scientific studies have shown its effectiveness in reducing anxiety and other negative states. 
+
+###What our the question? 
+Our study seeks to take this a step further: is it meditation that decreases stress, or is it activites that accompany meditation that are effective? Can other calming activities work as well as meditation to reduce stress? We chose coloring as the activity that most closely resembles traditional meditation without the meditation part. Coloring is a quiet, focused activity, that is not verbal. We chose geometric shapes as a backdrop to avoid the focus on people or cultural associations. Similarly in meditation, there is a distancing of the connection to thoughts and people, and a focus on the abstract. By comparing similar activities, we can narrow our search to those activities that best reduce stress.
+
+###Why does it matter?
+High blood pressure, left untreated, can harm a person's health for years before symptoms develop. Patients with high blood pressure may become disabled or suffer a fatal heart attack. About half of the people with high blood pressure who are left untreated die of heart disease, and another third die of stroke.  
+
+####Systolic vs Diastolic Blood Pressure vs Pulse
+Our study uses portable wrist blood pressure monitors to measure three numbers: systolic and diastolic blood pressure, and pulse rates. Of these numbers the most important are systolic blood pressure (the first number given when reporting blood pressure), and pulse.  Diastolic pressure is generally only used during an emergency such as a cardiac arrest. Pulse is more variable than systolic pressure, but both are indicators of stress levels. 
+
+###Experiment
+
+####Overview
+Our experiment observed thirty-two people both in groups and individually, in person and online. Subjects varied in age from under ten years to over eighty, and in years of meditation experience from zero to fifty. These volunteers were primarily drawn from researcher friends and family networks. 
+
+Our subjects were randomly divided into two groups: one group that listened to a fifteen-minute guided meditation (from https://www.appropriateresponse.com/teachings/) first and spent fifteen minutes coloring after, and another group that engaged in the coloring exercise first, followed by the guided meditation. Between each session, subjects were asked to get up and walk around for 5 minutes, to create a 'washout' period and avoid spillover effects. 
+
+Subjects were asked to measure their own blood pressure before and after each session, and the results were recorded either by the subject (during group sessions) or by the researcher (for individual sessions) after each measurement. 
+
+####Considerations
+
+#####Why within-subject design
+The within-subject design gave the study two advantages: first, using the same person to represent both experimental and control conditions gives greater precision around treatment estimates, and second, we were able to use fewer volunteers for the same statistical power.
+
+Within-subject designs have a few potential sources of bias: treatment assignment, anticipation, and persistence. We used an R function to assign subjects to either meditation-first or coloring-first groups. As new volunteers signed up, they were added to the next slot on a list which automatically assigned the pre-randomized group. 
+
+To avoid anticipation, subjects were not told what the sessions would entail until the sessions began. There may have been some guesswork, due to our pre-experiment questions that identified years of meditation experience, or to the packages that arrived in the mail that included colored pencils. However, the details were not known to the subjects in advance. 
+
+A washout of five minutes was used to comboat persistance. While it might have been better to take a longer period of time to 'reset' our subjects blood pressures, we tried to keep this time short in consideration of the overall time our volunteers were giving to the study. On average, color-firsters retained a drop of 2.5 points after their initial sessions, while meditate-firsters retained a drop of .9 points. 
+
+#####Why Coloring
+Coloring is used quite often in medical experiments as a control activity.  We used it because of its similarity to meditation - subjects are focused, seated, not interacting with other people, not required to use language, and silent. It was the closest activity we found that included many of the calming features of meditation, without actually being meditation. 
+
+#####Why a Guided Meditation
+We chose an online guided meditation from www.appropriateresponse.com for the meditation sessions. There was a great deal of debate about this choice within the team: meditation styles include silent, guided, mantras, visualizations, music and more. In the end, it was decided that for beginners, a guided meditation would be less arduous. Mantra meditations might be distracting, especially in group settings. In a music meditation, separating out whether it was the music or the meditation that created the effects would be impossible. And visualization meditations might take too long to explain, and have their own set of confounding factors (who gives the instructions, if they would be remembered, etc.).  
+
+Guided meditations themselved come with an array of variation. The meditation we chose was deemed the least potentially offensive, as it avoids spiritual and esoteric language. 
+
+####Challenges
+
+#####BP measurement device precision
+While we were pleased to find affordable mobile blood pressure monitors, wrist monitors are not the best measuring devices for precision. Each person required some basic instructions in the use of the monitors. In one case we were forced to remove the measured results, as they were deemed an error by a medical professional.
+
+#####Subject inexperience
+Experienced meditators often aim for 30 to 60 minutes in a given session. However, this length of time might be uncomfortable for inexperienced meditators, so we limited the sessions to 15 minutes.  An interesting follow-up study might test the results of a longer meditation, using only subjects with meditation experience. 
+
+#####Subject participation
+The original study design called for subjects to test the long-term results of meditation. For practicality and do avoid non-compliance or attrition, the design was altered to measure the results of a single meditation. A follow up study might take advantage of subjects on a meditation retreat to look for longer term effects, although the generalizability of the findings would certainly be called into question.
+
+
+##Data:
+```{r, warning=FALSE, comment=FALSE}
+library(data.table)
+library(sandwich)
+library(lmtest)
+library(stargazer)
+library(RColorBrewer)
+library(cobalt)
+library(car)
+```
+
+###Data Exploration
+
+#####Read in and clean up the data
+```{r}
+d <- fread("../data/meditation.csv")
+# Should be 32 subjects
+cat("Number of rows:", nrow(d), "\n")
+str(d)
+#d[13]
+d <- data.table(d)
+
+# ******Clean up the data*****
+# 1. We are remove ID = 13 because this person's BP number is likely machine error
+# 2. Reverse group number: 1 should be meditation first aka "med-first", 0 is coloring 1st aka "color-first"
+# 3. convert string categories to numeric
+
+d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th and 21st person
+             Recruited_By,
+             caffeinated_drinks,
+             Age_Group,
+             Gender,
+             Religion,
+             Years_practice,
+             hours_since_last_caffeinated_drink,
+             previous_strenuous_activity,
+             Before_Meditation_how_relaxed,
+             Post_Med_focus,
+             Enjoy_Coloring,
+             in_person = ifelse(Online_in_person == 'I', 1, 0),
+             Pre_existing_blood_pressure,
+             B4_Med_BP_Sys, B4_Med_BP_PUL,
+             After_Med_BP_Sys, After_Med_BP_PUL,
+             B4_color_BP_Sys, B4_color_BP_Pul, 
+             After_color_BP_Sys, After_color_BP_Pul) ]
+
+summary(d2)
+```
+
+#####Chart the data
+
+```{r}
+par(mfrow=c(1,2))
+hist(d2$Years_practice, breaks = 30,col="blue", 
+     main = "Histogram: Years of Practice", xlab = "Years")
+hist(d2$hours_since_last_caffeinated_drink, breaks = 30, col="green",
+     main = "Histogram: Hours since Caffeine", xlab = "Hours")
+hist(d2$B4_Med_BP_Sys, breaks = 30, xlim=c(80,140), col="orange",
+     main = "Histogram: Prior Syst.", xlab = "Systolic Pressure")
+hist(d2$After_Med_BP_Sys, breaks = 30, xlim=c(80,140),col="gold",
+     main = "Histogram: After Meditation Syst.", xlab = "Systolic Pressure")
+hist(d2$B4_color_BP_Sys, breaks = 30, xlim=c(80,140), col="purple",
+     main = "Histogram: Prior Pulse", xlab = "Pulse")
+hist(d2$After_color_BP_Sys, breaks = 30, xlim=c(80,140), col="violet",
+     main = "Histogram: After Meditation Pulse", xlab = "Pulse")
+
+#display.brewer.all()
+cols<-brewer.pal(n=3,name="Set1")
+# Note: Group 0 is treatment group!
+cols_t1<-cols[d2$Group+1]
+med_diff <-  d2$After_Med_BP_Sys - d2$B4_Med_BP_Sys
+color_diff <-   d2$After_color_BP_Sys - d2$B4_color_BP_Sys
+par(mfrow =c(1,2))
+plot(d2$Group ~ med_diff , col=cols_t1, pch=16, ylab="Group")
+legend("center",legend=c("Group 1: med-first", "Group 0: color-first"), 
+       col=cols_t1, pch=16)
+plot(d2$Group ~ color_diff , col=cols_t1, pch=16, ylab="Group")
+legend("center",legend=c("Group 1: med-first", "Group 0: color-first"), 
+       col=cols_t1, pch=16)
+
+# Plot b4 vs after meditation for 2 groups
+plot(After_Med_BP_Sys ~ B4_Med_BP_Sys, data=d2 , col=cols_t1, pch=16, 
+     xlab = "Before Meditation", ylab="After Meditation")
+legend(x=98,y=200, legend=c("Group 1: med-first", "Group 0: color-first"), col=cols_t1, pch=16, xpd=TRUE)
+
+# Plot b4 vs after coloring for 2 groups
+plot(After_color_BP_Sys ~ B4_color_BP_Sys, data=d2 , col=cols_t1, pch=16, 
+     xlab = "Before Coloring",ylab="After Coloring")
+legend(x=100,y=175, legend=c("Group 1: med-first", "Group 0: color-first"), col=cols_t1, pch=16, xpd=TRUE)
+
+```
+
+
+###Covariate Balance Check
+Matching was performed using the Matching package (Sekhon, 2011), and covariate balance was assessed using cobalt (Greifer, 2017), both in R 3.3.0 (R Core Team, 2016).
+
+When using bal.tab() with continuous treatments, the balance statistic presented is the (weighted) Pearson correlation between each covariate and treatment.
+
+```{r, warning=FALSE}
+#data(d2, package = "cobalt")
+covs <- subset(d2, select = -c(Group, After_Med_BP_Sys, After_Med_BP_PUL, After_color_BP_Sys, After_color_BP_Pul))
+#f.build("group", d2)
+
+# Generating ATT weights as specified in Austin (2011)
+d2$p.score <- glm(f.build("Group", covs), data = d2, 
+                       family = "binomial")$fitted.values
+d2$att.weights <- with(d2, Group + (1-Group)*p.score/(1-p.score))
+
+#bal.tab(covs, treat = d2$Group)
+bal.tab(covs, treat = d2$Group, weights = d2$att.weights,
+         method = "weighting", estimand="ATE")
+
+```
+#####Covariate Balance Concerns
+Of the covariates analyzed, the following stand out as unbalanced: caffeinated drinks, religion, and years of practice. The Med-First group is more likely to have participants who drink caffeine, are Buddhist and have more meditation experience, while the Color-First group is more likely to include subjects that do not identify with a particular religion. 
+
+With a smaller measure, but of possible concern, are the difference in prior blood pressure and pulse measures. Med-First participants tended to start out with higher pulse rates, and lower systolic blood pressure metrics.
+
+In each case, it will be important to include these variables when running regressions, to account for any possible bias.
+
+```{r}
+bal.plot(covs, treat = d2$Group, weights = d2$att.weights, method = "weighting",
+         estimand = "ATT", var.name = "caffeinated_drinks")
+bal.plot(covs, treat = d2$Group, weights = d2$att.weights, method = "weighting",
+         estimand = "ATT", var.name = "Years_practice")
+bal.plot(covs, treat = d2$Group, weights = d2$att.weights, method = "weighting",
+         estimand = "ATT", var.name = "Religion")
+bal.plot(covs, treat = d2$Group, weights = d2$att.weights, method = "weighting",
+         estimand = "ATT", var.name = "B4_Med_BP_PUL")
+bal.plot(covs, treat = d2$Group, weights = d2$att.weights, method = "weighting",
+         estimand = "ATT", var.name = "B4_color_BP_Sys")
+```
+
+#####Feature creation and selection
+
+```{r, warning=FALSE}
+#create bins for meditation experience
+d2 <- transform(d2, experience=cut(Years_practice,  
+                              breaks=c(-1,1, 10, 25, 50),
+                             labels= c(0,10, 25, 50)))
+
+d2 <- transform(d2, pre_med_sys=cut(B4_Med_BP_Sys, 
+                                      breaks = c(50, 100, 125, 150),
+                                      labels = c("low", "med", "high")))
+d2 <- transform(d2, pre_col_sys=cut(B4_color_BP_Sys, 
+                                      breaks = c(50, 100, 125, 150),
+                                      labels = c("low", "med", "high")))
+    
+d2$age = recode(d2$Age_Group, "c('5-9', '10-19') = '< 20'; '30-39' = '30s'; '40-49'= '40s'; c('50-59', '60-69', '80-90') = '50+'")
+
+d2$prev_act = recode(d2$previous_strenuous_activity, "'No' = 'no'; else='yes'")
+
+#create fields to capture the difference before and after each session
+#for clarity, we subtract the number we expect to be smaller (after) from the larger (before)
+#to keep the numbers positive
+#Sysolic
+d2$med_sys_diff = d2$B4_Med_BP_Sys - d2$After_Med_BP_Sys
+cat("Average Meditation Effect on Systolic Blood Pressure:", mean(d2$med_sys_diff), "\n")
+d2$col_sys_diff = d2$B4_color_BP_Sys - d2$After_color_BP_Sys
+cat("Average Coloring Effect on Systolic Blood Pressure:", mean(d2$col_sys_diff), "\n")
+#Pulse
+d2$med_pul_diff = d2$B4_Med_BP_PUL - d2$After_Med_BP_PUL
+cat("Average Meditation Effect on Pulse Rate:",mean(d2$med_pul_diff), "\n")
+d2$col_pul_diff = d2$B4_color_BP_Pul - d2$After_color_BP_Pul
+cat("Average Coloring Effect on Pulse Rate:",mean(d2$col_pul_diff), "\n")
+#The Coloring ATE is higher than Meditation, so subtract meditation results from coloring
+# Create difference in differences measures between meditation and coloring
+cat("\nAverage Difference on Systolic Blood Pressure between Coloring and Meditation Effects:", mean(d2$col_sys_diff - d2$med_sys_diff), "\n")
+
+cat("\nAverage Difference on Pulse Rate between Coloring and Meditation Effects:", mean(d2$col_pul_diff - d2$med_pul_diff))
+
+```
+
+#####Correlations and Complications
+
+```{r}
+cat("Are Recruiter, Age and Experience correlated?\n\n")
+cat("Recruiter by Subject Age Group\n")
+table(d2$Recruited_By, d2$age)
+cat("\nExperience by Subject Age Group\n")
+table(d2$experience, d2$age)
+
+cat("\nATE between meditation vs color by Group. Did we leave enough time for a washout?\n\n")
+
+ate_group_1_diff = mean(d2$col_sys_diff[d$Group==TRUE], na.rm=TRUE) - 
+   mean(d2$med_sys_diff[d2$Group==TRUE], na.rm=TRUE)
+cat("   Med-first Group Systolic Difference:", round(ate_group_1_diff, 2), "\n")
+
+ate_group_0_diff = mean(d2$col_sys_diff[d$Group==FALSE], na.rm=TRUE) - 
+   mean(d2$med_sys_diff[d2$Group==FALSE], na.rm=TRUE)
+cat("   Color-first Group Systolic Difference:", round(ate_group_0_diff, 2), "\n")
+
+
+ate_group_1_diff = mean(d2$col_pul_diff[d$Group==TRUE], na.rm=TRUE) - 
+   mean(d2$med_pul_diff[d2$Group==TRUE], na.rm=TRUE)
+cat("   Med-first Group Pulse Difference:", round(ate_group_1_diff, 2), "\n")
+
+ate_group_0_diff = mean(d2$col_pul_diff[d$Group==FALSE], na.rm=TRUE) - 
+   mean(d2$med_pul_diff[d2$Group==FALSE], na.rm=TRUE)
+cat("   Color-first Group Pulse Difference:", round(ate_group_0_diff, 2), "\n")
+
+
+```
+Based on these results, it would be best to include either Age, or Experience or Recruiter in a model because they are correlated.  Always include Group, as the washout period may have been less effected that we might have hoped.
+
+
+###Model Building:
+
+#####Meditation Effects:
+
+```{r}
+med_ols_exp = lm(med_sys_diff ~ Group + pre_med_sys + experience + Gender + 
+               Religion + hours_since_last_caffeinated_drink + in_person + 
+               prev_act + Before_Meditation_how_relaxed + Post_Med_focus , data=d2)
+
+summary(med_ols_exp)
+med_ols_age = lm(med_sys_diff ~ Group + pre_med_sys + age + Gender + 
+               Religion + hours_since_last_caffeinated_drink + in_person + 
+               prev_act + Before_Meditation_how_relaxed + Post_Med_focus , data=d2)
+
+summary(med_ols_age)
+```
+
+
+#####Color Effects:
+```{r}
+col_ols_exp = lm(col_sys_diff ~ Group + pre_col_sys + experience + Gender + 
+               Religion + hours_since_last_caffeinated_drink + in_person + 
+               prev_act + Before_Meditation_how_relaxed + Enjoy_Coloring , data=d2)
+
+summary(col_ols_exp)
+col_ols_age = lm(col_sys_diff ~ Group + pre_col_sys + age + Gender + 
+               Religion + hours_since_last_caffeinated_drink + in_person + 
+               prev_act + Before_Meditation_how_relaxed + Enjoy_Coloring , data=d2)
+
+summary(col_ols_age)
+```
+
+```{r}
+stargazer(med_ols_exp, med_ols_age, col_ols_exp, col_ols_age, type = "text")
+
+```
+###Linear Regression model with difference-in-difference Estimate
+
+
+### Models on meditation data
+##### Is this the correct interaction term: Years_practice * Group?
+
+```{r}
+# On meditation Sys
+m1 <- lm(med_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
+
+# On meditation pulse
+m2 <- lm(med_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
+```
+
+### Models on coloring data
+
+```{r}
+# On coloring systolic
+m3 <- lm(col_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
+
+# On coloring pulse & group interaction
+m4 <- lm(col_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
+
+stargazer(m1, m2, m3, m4, type = "text")
+```
+##### Results:
+* From high-level, while the coefficients show mostly decreases in blood pressure (BP) and pulses in both coloring and mediation exercises, the 4 models show lots of the coefficients are NOT statistically significant so we can't determine any causal effects from them
+
+Now, let's look at the models' covariates with statistical significance:
+
+* m1 - difference in BP after meditation: hours_since_last_caffeinated_drink increases BP by 0.454 which is a small number. Interaction term Years_practice:Group means that in group 1 (meditation first), number of years of meditation increases BP by 0.6 which is also a small amount. The other variables mostly show decreases in BP but we can't rely on them to draw causal inference because they are NOT statistically significant
+
+* m2 - difference in pulse after meditation: for Group 1, the pulse decreases by 7.434. 
+
+* m3 - difference in BP after coloring: there are no statistically significant coefficients here
+
+* m4 - difference in pulse after coloring: also no statistically significant coefficients
+
+##Summary
+###Conclusions
+
+###Generalization
+##### Can't generalize from this finding because:
+##### Subjects are our friends and relatives. This sample is not randomized from the general population therefore doesn't represent the population's distribution
+###Future Research
