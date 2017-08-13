@@ -179,6 +179,7 @@ cat("\nPrevious Relaxation Covariate Balance:\n")
 cat("\nIn Person vs Online Covariate Balance:\n")
 (cov_online = table(d2$Group, d2$in_person))
 
+
 ```
 
 ##Model Building:
@@ -195,10 +196,12 @@ cat("\nIn Person vs Online Covariate Balance:\n")
 
 ##### ATE between meditation vs color
 ```{r}
+cat("Average difference in differences between Color and Meditation\n\n")
+cat("A positive number indicates that Coloring resulted in a bigger decrease\n over Meditation in Systolic Blood Pressure\n")
 d2$med_sys_diff = d2$After_Med_BP_Sys - d2$B4_Med_BP_Sys
 d2$col_sys_diff = d2$After_color_BP_Sys - d2$B4_color_BP_Sys
 (ate_sys_diff = mean(d2$med_sys_diff, na.rm=TRUE) - mean(d2$col_sys_diff, na.rm=TRUE))
-
+cat("\nA positive number indicates that Coloring resulted in a bigger decrease\n over Meditation in Pulse\n")
 d2$med_pul_diff = d2$After_Med_BP_PUL - d2$B4_Med_BP_PUL
 d2$col_pul_diff = d2$After_color_BP_Pul - d2$B4_color_BP_Pul
 (ate_col_diff = mean(d2$med_pul_diff, na.rm=TRUE) - mean(d2$col_pul_diff, na.rm=TRUE))
@@ -230,7 +233,7 @@ e_mod = lm(med_sys_diff~B4_Med_BP_Sys+Group+experience + Age_Group + Religion + 
 summary(e_mod)
 
 cat("Meditation pulse difference by Group, Experience, Age, Religion and Gender \n")
-e_mod = lm(med_pul_diff~B4_Med_BP_PUL+Group+experience + Age_Group + Religion + Gender, 
+e_mod = lm(med_pul_diff~B4_Med_BP_PUL+Group+experience + Age_Group + Religion + Gender + pre_existing_BP, 
            data = d2)
 summary(e_mod)
 ```
@@ -242,7 +245,7 @@ e_mod = lm(col_sys_diff~B4_Med_BP_Sys+Group+experience + Age_Group + Religion + 
 summary(e_mod)
 
 cat("Meditation pulse difference by Group, Experience, Age, Religion and Gender \n")
-e_mod = lm(col_pul_diff~B4_Med_BP_PUL+Group+experience + Age_Group + Religion + Gender, 
+e_mod = lm(col_pul_diff~B4_Med_BP_PUL+Group+experience + Age_Group + Religion + Gender + pre_existing_BP, 
            data = d2)
 summary(e_mod)
 ```
