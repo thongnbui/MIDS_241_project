@@ -64,7 +64,7 @@ The original study design called for subjects to test the long-term results of m
 
 
 ##Data:
-```{r, warning=FALSE, comment=FALSE}
+```{r libraries, warning=FALSE, comment=FALSE}
 library(data.table)
 library(sandwich)
 library(lmtest)
@@ -77,7 +77,7 @@ library(car)
 ###Data Exploration
 
 #####Read in and clean up the data
-```{r}
+```{r data_clean}
 d <- fread("../data/meditation.csv")
 # Should be 32 subjects
 cat("Number of rows:", nrow(d), "\n")
@@ -115,7 +115,7 @@ summary(d2)
 
 #####Chart the data
 
-```{r}
+```{r expl_charts}
 par(mfrow=c(1,2))
 hist(d2$Years_practice, breaks = 30,col="blue", 
      main = "Histogram: Years of Practice", xlab = "Years")
@@ -164,7 +164,7 @@ Matching was performed using the Matching package (Sekhon, 2011), and covariate 
 
 When using bal.tab() with continuous treatments, the balance statistic presented is the (weighted) Pearson correlation between each covariate and treatment.
 
-```{r, warning=FALSE}
+```{r cov_balance, warning=FALSE}
 #data(d2, package = "cobalt")
 covs <- subset(d2, select = 
                  -c(Group, After_Med_BP_Sys, After_Med_BP_PUL, 
@@ -188,7 +188,7 @@ The difference in prior blood pressure and pulse measures is perhaps even more c
 
 In each case, it will be important to include these variables when running regressions, to account for any possible bias.
 
-```{r}
+```{r balance_plots, fig.width=5,fig.height=4}
 bal.plot(covs, treat = d2$Group, weights = d2$att.weights, method = "weighting",
          estimand = "ATT", var.name = "caffeinated_drinks")
 bal.plot(covs, treat = d2$Group, weights = d2$att.weights, method = "weighting",
@@ -203,7 +203,7 @@ bal.plot(covs, treat = d2$Group, weights = d2$att.weights, method = "weighting",
 
 #####Feature creation and selection
 
-```{r, warning=FALSE}
+```{r feature_create, warning=FALSE}
 #create bins for meditation experience
 d2 <- transform(d2, experience=cut(Years_practice,  
                               breaks=c(-1,1, 10, 25, 50),
@@ -244,7 +244,7 @@ cat("\nAverage Difference on Pulse Rate between Coloring and Meditation Effects:
 
 #####Correlations and Complications
 
-```{r}
+```{r corr_compl}
 cat("Are Recruiter, Age and Experience correlated?\n\n")
 cat("Recruiter by Subject Age Group\n")
 table(d2$Recruited_By, d2$age)
@@ -279,7 +279,7 @@ Based on these results, it would be best to include either Age, or Experience or
 
 #####Meditation Effects:
 
-```{r}
+```{r med_mod}
 med_ols_exp = lm(med_sys_diff ~ Group + pre_med_sys + experience + Gender + 
                Religion + hours_since_last_caffeinated_drink + in_person + 
                prev_act + Before_Meditation_how_relaxed + Post_Med_focus , data=d2)
@@ -294,7 +294,7 @@ summary(med_ols_age)
 
 
 #####Color Effects:
-```{r}
+```{r col_mod}
 col_ols_exp = lm(col_sys_diff ~ Group + pre_col_sys + experience + Gender + 
                Religion + hours_since_last_caffeinated_drink + in_person + 
                prev_act + Before_Meditation_how_relaxed + Enjoy_Coloring , data=d2)
@@ -307,7 +307,7 @@ col_ols_age = lm(col_sys_diff ~ Group + pre_col_sys + age + Gender +
 summary(col_ols_age)
 ```
 
-```{r}
+```{r stargazer_ind}
 stargazer(med_ols_exp, med_ols_age, col_ols_exp, col_ols_age, type = "text")
 
 ```
