@@ -81,7 +81,7 @@ library(car)
 d <- fread("../data/meditation.csv")
 # Should be 32 subjects
 cat("Number of rows:", nrow(d), "\n")
-str(d)
+#str(d)
 #d[13]
 d <- data.table(d)
 
@@ -110,13 +110,13 @@ d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th person
              B4_color_BP_Sys, B4_color_BP_Pul, 
              After_color_BP_Sys, After_color_BP_Pul) ]
 
-summary(d2)
+#summary(d2)
 ```
 
 #####Chart the data
 
 ```{r expl_charts}
-par(mfrow=c(1,2))
+par(mfrow=c(2,2))
 hist(d2$Years_practice, breaks = 30,col="blue", 
      main = "Histogram: Years of Practice", xlab = "Years")
 hist(d2$hours_since_last_caffeinated_drink, breaks = 30, col="green",
