@@ -5,6 +5,8 @@ output:
   pdf_document: default
   html_document: default
 ---
+## Source code
+Our entire project code and documents can be accessed from https://github.com/thongnbui/MIDS_241_project. This file is can be found at code/ProjectOhm.{Rmd,pdf}. Data file is data/meditation.csv
 
 ##Abstract:
 We examine the effects of meditation on blood pressure and pulse rates. In particular, using a within-subject experimental design, we compare the effects of a single fifteen-minute meditation session to a similar session of coloring graphic shapes. Subjects were randomly assigned to undergo either the meditation session first, followed by coloring, or the coloring session first, followed by meditation. In each case, a five-minute washout period was inserted between the sessions.  
