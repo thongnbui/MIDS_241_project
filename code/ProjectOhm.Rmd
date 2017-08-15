@@ -1,6 +1,6 @@
 ---
 title: '241 Project (Summer 2017): Effect of Meditation on Blood Pressure'
-author: "Erika Lawrence, Thong Bui, Matt Post"
+author: "Thong Bui, Erika Lawrence, Matt Post"
 output:
   pdf_document: default
   html_document: default
@@ -208,16 +208,33 @@ bal.plot(covs, treat = d2$Group, weights = d2$att.weights, method = "weighting",
 d2 <- transform(d2, experience=cut(Years_practice,  
                               breaks=c(-1,1, 10, 25, 50),
                              labels= c(0,10, 25, 50)))
-
+d2 <- transform(d2, exp_bin=cut(Years_practice,  
+                              breaks=c(-1,0, 50),
+                             labels= c(0,1)))
 d2 <- transform(d2, pre_med_sys=cut(B4_Med_BP_Sys, 
                                       breaks = c(50, 100, 125, 150),
                                       labels = c("low", "med", "high")))
 d2 <- transform(d2, pre_col_sys=cut(B4_color_BP_Sys, 
                                       breaks = c(50, 100, 125, 150),
                                       labels = c("low", "med", "high")))
+d2 <- transform(d2, pre_med_pul=cut(B4_Med_BP_PUL, 
+                                      breaks = c(50, 70, 90, 110),
+                                      labels = c("low", "med", "high")))
+d2 <- transform(d2, pre_col_pul=cut(B4_color_BP_Pul, 
+                                      breaks = c(50, 70, 90, 110),
+                                      labels = c("low", "med", "high")))
+
+rel_str = ''
+rel_str = "c('Agnostic', 'None', 'Spiritual') = 'NA';"
+rel_str = paste(rel_str, " c('Buddhist', 'Hindu') = 'Eastern'; 'Christian' = 'Christian'")
+d2$rel <- recode(d2$Religion, rel_str)
 age_str = "c('5-9', '10-19') = '< 20'; '30-39' = '30s';"
 age_str = paste(age_str , "'40-49'= '40s'; c('50-59', '60-69', '80-90') = '50+'")
 d2$age = recode(d2$Age_Group, age_str)
+d2 = transform(d2, latest_fix=cut(hours_since_last_caffeinated_drink, 
+                                      breaks = c(.5, 2, 5, 12, 24),
+                                      labels = c("<2", "<5", "<12", "24+")))
+d2$latest_fix = factor(d2$latest_fix)
 
 d2$prev_act = recode(d2$previous_strenuous_activity, "'No' = 'no'; else='yes'")
 
@@ -236,9 +253,11 @@ d2$col_pul_diff = d2$B4_color_BP_Pul - d2$After_color_BP_Pul
 cat("Average Coloring Effect on Pulse Rate:",mean(d2$col_pul_diff), "\n")
 #The Coloring ATE is higher than Meditation, so subtract meditation results from coloring
 # Create difference in differences measures between meditation and coloring
-cat("\nAverage Difference on Systolic Blood Pressure between Coloring and Meditation Effects:", mean(d2$col_sys_diff - d2$med_sys_diff), "\n")
+cat("\nAverage Difference on Systolic Blood Pressure between Coloring and Meditation Effects:", 
+    mean(d2$col_sys_diff - d2$med_sys_diff), "\n")
 
-cat("\nAverage Difference on Pulse Rate between Coloring and Meditation Effects:", mean(d2$col_pul_diff - d2$med_pul_diff))
+cat("\nAverage Difference on Pulse Rate between Coloring and Meditation Effects:", 
+    mean(d2$col_pul_diff - d2$med_pul_diff))
 
 ```
 
@@ -279,69 +298,115 @@ Based on these results, it would be best to include either Age, or Experience or
 
 #####Meditation Effects:
 
+
+
 ```{r med_mod}
-med_ols_exp = lm(med_sys_diff ~ Group + pre_med_sys + experience + Gender + 
-               Religion + hours_since_last_caffeinated_drink + in_person + 
+#Systolic Blood Pressure
+med_sys_exp_ols = lm(med_sys_diff ~ Group + pre_med_sys + experience + Gender + 
+               Religion +  caffeinated_drinks + in_person + 
                prev_act + Before_Meditation_how_relaxed + Post_Med_focus , data=d2)
 
-summary(med_ols_exp)
-med_ols_age = lm(med_sys_diff ~ Group + pre_med_sys + age + Gender + 
-               Religion + hours_since_last_caffeinated_drink + in_person + 
+#summary(med_sys_exp_ols)
+med_sys_age_ols = lm(med_sys_diff ~ Group + pre_med_sys + age + Gender + 
+               Religion + caffeinated_drinks + in_person + 
                prev_act + Before_Meditation_how_relaxed + Post_Med_focus , data=d2)
 
-summary(med_ols_age)
+#summary(med_sys_age_ols)
+#Pulse
+med_pul_exp_ols = lm(med_pul_diff ~ Group + pre_med_pul + experience + Gender + 
+               Religion + caffeinated_drinks + in_person + 
+               prev_act + Before_Meditation_how_relaxed + Post_Med_focus , data=d2)
+
+#summary(med_pul_exp_ols)
+med_pul_age_ols = lm(med_pul_diff ~ Group + pre_med_pul + age + Gender + 
+               Religion + caffeinated_drinks + in_person + 
+               prev_act + Before_Meditation_how_relaxed + Post_Med_focus , data=d2)
+
+#summary(med_pul_exp_ols)
 ```
 
 
 #####Color Effects:
 ```{r col_mod}
-col_ols_exp = lm(col_sys_diff ~ Group + pre_col_sys + experience + Gender + 
-               Religion + hours_since_last_caffeinated_drink + in_person + 
-               prev_act + Before_Meditation_how_relaxed + Enjoy_Coloring , data=d2)
+col_sys_exp_ols = lm(col_sys_diff ~ Group + pre_col_sys + experience +
+               Religion + caffeinated_drinks + in_person + 
+               prev_act  + Enjoy_Coloring , data=d2)
 
-summary(col_ols_exp)
-col_ols_age = lm(col_sys_diff ~ Group + pre_col_sys + age + Gender + 
-               Religion + hours_since_last_caffeinated_drink + in_person + 
-               prev_act + Before_Meditation_how_relaxed + Enjoy_Coloring , data=d2)
+#summary(col_sys_exp_ols)
+col_sys_age_ols = lm(col_sys_diff ~ Group + pre_col_sys + age + 
+               Religion + caffeinated_drinks + in_person + 
+               prev_act  + Enjoy_Coloring , data=d2)
 
-summary(col_ols_age)
+#summary(col_sys_age_ols)
+
+#Pulse
+col_pul_exp_ols = lm(col_pul_diff ~ Group + pre_col_pul + experience +
+               Religion + caffeinated_drinks + in_person + 
+               prev_act + Enjoy_Coloring  , data=d2)
+
+#summary(col_sys_exp_ols)
+col_pul_age_ols = lm(col_pul_diff ~ Group + pre_col_pul + age +
+               Religion + caffeinated_drinks + in_person + 
+               prev_act   + Enjoy_Coloring , data=d2)
+
+#summary(col_pul_age_ols)
 ```
 
-```{r stargazer_ind}
-stargazer(med_ols_exp, med_ols_age, col_ols_exp, col_ols_age, type = "text")
+#####Compare the Meditation and Color effects linear models, separately
 
+```{r stargazer_ind}
+#compare meditation models
+cat("Meditation Model Comparison\n")
+stargazer(med_sys_exp_ols, med_sys_age_ols, med_pul_exp_ols, med_pul_age_ols, type = "text")
+#compare coloring models
+cat("\n\nColor Model Comparison\n")
+stargazer(col_sys_exp_ols, col_sys_age_ols, col_pul_exp_ols, col_pul_age_ols, type = "text")
 ```
 ###Linear Regression model with difference-in-difference Estimate
 
-
-### Models on meditation data
-##### Is this the correct interaction term: Years_practice * Group?
-
 ```{r}
-# On meditation Sys
-m1 <- lm(med_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
+# Create some Diff variables
+d2$col_med_sys_diff = d2$col_sys_diff - d2$med_sys_diff
+d2$col_med_pul_diff = d2$col_pul_diff - d2$med_pul_diff
+d2$pre_sys_diff= d2$B4_color_BP_Sys - d2$B4_Med_BP_Sys
+d2$pre_pul_diff= d2$B4_color_BP_Pul - d2$B4_Med_BP_PUL
 
-# On meditation pulse
-m2 <- lm(med_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
+cat("Difference in differences on systolic blood pressure:", mean(d2$col_med_sys_diff))
+cat("\nDifference in differences on pulse rate:", mean(d2$col_med_pul_diff), "\n")
+
+cat("\nDifference in Differences Model Comparison:\n")
+dd_sys_ols1 = lm(col_med_sys_diff~ Group + pre_sys_diff + experience + Gender + 
+               Religion +  caffeinated_drinks + in_person + 
+               prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
+dd_sys_ols2 = lm(col_med_sys_diff~ Group + pre_sys_diff + age + Gender + 
+               Religion +  caffeinated_drinks + in_person + 
+               prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
+
+dd_pul_ols1 = lm(col_med_pul_diff~ Group + pre_pul_diff + experience + Gender + 
+               Religion +  caffeinated_drinks + in_person + 
+               prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
+dd_pul_ols2 = lm(col_med_pul_diff~ Group + pre_pul_diff + age + Gender + 
+               Religion +  caffeinated_drinks + in_person + 
+               prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
+stargazer(dd_sys_ols1, dd_sys_ols2, dd_pul_ols1, dd_pul_ols2,type = "text")
+
 ```
 
-### Models on coloring data
 
-```{r}
-# On coloring systolic
-m3 <- lm(col_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
+### Results:
+* Both coloring and meditation have a lowering effect on blood pressure and pulse. Our results show the effect from coloring being more powerful than meditation. A number of variables influence the variation in our results:
 
-# On coloring pulse & group interaction
-m4 <- lm(col_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
+##### Meditation 
+* A number of variables were found to influence the results of meditation on systolic blood pressure and pulse. In both cases, the **Group** was significant, telling us that the washout period was not sufficient to avoid spillover effects. One of the most significant variables influencing systolic blood pressure differences was the **initial systolic blood pressure**: those subjects who began the session with a higher systolic measure were most likely to have a larger difference. **Initial pulse** was significant to a lesser degree on the post-meditation pulse measurement. **Experience** also played a key role, particularly for participants who had 1 to 10 years of meditation experience. While those with 10 to 25 years of experience were most likely to see a benefit on meditation to their pulse rates. **Previous activity** was also highly significant in a greater difference for systolic blood pressure from meditation, and on pulse to a lesser degree. While **Religion** had little effect on pulse, those who identified with a particular faith showed a lessening effect for meditation on blood pressure. **Caffeinated beverages** were significant for blood pressure only.  And pulse dropped more when the experiment was conducted **in person**, less so for blood pressure. 
 
-stargazer(m1, m2, m3, m4, type = "text")
-```
-##### Results:
-* From high-level, while the coefficients show mostly decreases in blood pressure (BP) and pulses in both coloring and mediation exercises, the 4 models show lots of the coefficients are NOT statistically significant so we can't determine any causal effects from them
+To the researchers, the biggest surprise in these results was that those who espoused a particular religion, particularly those that are associated with meditation (Buddhism and Hinduism), saw the smallest effect of the meditation session on blood pressure. It may be that for people who are more accustomed to meditation, the particular format of the guided meditation was distracting, or that a longer meditation would have revealed different results. It is also possible that over time, meditation has less of an effect on a person's blood pressure. This would be a very interesting subject for a future study.
+
+#####Coloring:
+In contrast, those who identified with a particular **Religion** saw significant positive impact on coloring effects on pulse rates, and to a lesser degree on systolic blood pressure. In this case, those who identified as having no religion also saw a positive benefit, while those identifying as agnostic or 'other' did not have a significant effect. 
 
 Now, let's look at the models' covariates with statistical significance:
 
-* m1 - difference in BP after meditation: hours_since_last_caffeinated_drink increases BP by 0.454 which is a small number. Interaction term Years_practice:Group means that in group 1 (meditation first), number of years of meditation increases BP by 0.6 which is also a small amount. The other variables mostly show decreases in BP but we can't rely on them to draw causal inference because they are NOT statistically significant
+* m1 - difference in BP after meditation: hours_since_last_caffeinated_drink increases BP by 0.454 which is a small number. Interaction term Years_practice:Group means that in group 1 (meditation first), number of years of meditation increases BP by 0.6 which is also a small amount. The other variables mostly show decreases in BP but we can't rely on them to draw causal inference because they are NOT statistically significant. Those 
 
 * m2 - difference in pulse after meditation: for Group 1, the pulse decreases by 7.434. 
 
