@@ -256,9 +256,9 @@ d2 &lt;- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0),  # Exclude 13th person
              Religion,
              Years_practice,
              hours_since_last_caffeinated_drink,
-#             hours_since_last_caffeinated_drink = ifelse(caffeinated_drinks == 0, 0, hours_since_last_caffeinated_drink),
              previous_strenuous_activity,
              Before_Meditation_how_relaxed,
+#             hours_since_last_caffeinated_drink = ifelse(caffeinated_drinks == 0, NA, hours_since_last_caffeinated_drink),
              in_person = ifelse(Online_in_person == 'I', 1, 0),
 #             Pre_existing_blood_pressure,
              pre_existing_BP = ifelse(Pre_existing_blood_pressure == 'Low', 1, 
@@ -450,10 +450,19 @@ legend(x=100,y=175, legend=c(&quot;Group 1: med-first&quot;, &quot;Group 0: colo
 </div>
 <div id="ate-between-meditation-vs-color" class="section level5">
 <h5>ATE between meditation vs color</h5>
+<pre class="r"><code>cat(&quot;Average difference in differences between Color and Meditation\n\n&quot;)</code></pre>
+<pre><code>## Average difference in differences between Color and Meditation</code></pre>
+<pre class="r"><code>cat(&quot;A positive number indicates that Coloring resulted in a bigger decrease\n over Meditation in Systolic Blood Pressure\n&quot;)</code></pre>
+<pre><code>## A positive number indicates that Coloring resulted in a bigger decrease
+##  over Meditation in Systolic Blood Pressure</code></pre>
 <pre class="r"><code>d2$med_sys_diff = d2$After_Med_BP_Sys - d2$B4_Med_BP_Sys
 d2$col_sys_diff = d2$After_color_BP_Sys - d2$B4_color_BP_Sys
 (ate_sys_diff = mean(d2$med_sys_diff, na.rm=TRUE) - mean(d2$col_sys_diff, na.rm=TRUE))</code></pre>
 <pre><code>## [1] 2.064516</code></pre>
+<pre class="r"><code>cat(&quot;\nA positive number indicates that Coloring resulted in a bigger decrease\n over Meditation in Pulse\n&quot;)</code></pre>
+<pre><code>## 
+## A positive number indicates that Coloring resulted in a bigger decrease
+##  over Meditation in Pulse</code></pre>
 <pre class="r"><code>d2$med_pul_diff = d2$After_Med_BP_PUL - d2$B4_Med_BP_PUL
 d2$col_pul_diff = d2$After_color_BP_Pul - d2$B4_color_BP_Pul
 (ate_col_diff = mean(d2$med_pul_diff, na.rm=TRUE) - mean(d2$col_pul_diff, na.rm=TRUE))</code></pre>
@@ -527,44 +536,45 @@ summary(e_mod)</code></pre>
 ## F-statistic: 2.942 on 18 and 12 DF,  p-value: 0.03074</code></pre>
 <pre class="r"><code>cat(&quot;Meditation pulse difference by Group, Experience, Age, Religion and Gender \n&quot;)</code></pre>
 <pre><code>## Meditation pulse difference by Group, Experience, Age, Religion and Gender</code></pre>
-<pre class="r"><code>e_mod = lm(med_pul_diff~B4_Med_BP_PUL+Group+experience + Age_Group + Religion + Gender, 
+<pre class="r"><code>e_mod = lm(med_pul_diff~B4_Med_BP_PUL+Group+experience + Age_Group + Religion + Gender + pre_existing_BP, 
            data = d2)
 summary(e_mod)</code></pre>
 <pre><code>## 
 ## Call:
 ## lm(formula = med_pul_diff ~ B4_Med_BP_PUL + Group + experience + 
-##     Age_Group + Religion + Gender, data = d2)
+##     Age_Group + Religion + Gender + pre_existing_BP, data = d2)
 ## 
 ## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -6.276 -1.409  0.000  1.139  7.077 
+##     Min      1Q  Median      3Q     Max 
+## -6.3368 -1.2870 -0.0175  1.0192  6.9682 
 ## 
 ## Coefficients:
 ##                   Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)        37.2331    15.8853   2.344 0.035631 *  
-## B4_Med_BP_PUL      -0.1493     0.1565  -0.954 0.357431    
-## Group             -13.4209     2.6062  -5.150 0.000187 ***
-## experience10        2.7696     3.9701   0.698 0.497702    
-## experience25       15.8529     3.2187   4.925 0.000277 ***
-## experience50       18.2498     5.0317   3.627 0.003069 ** 
-## Age_Group30-39     -9.4717     4.2484  -2.229 0.044043 *  
-## Age_Group40-49    -13.0420     4.5364  -2.875 0.013019 *  
-## Age_Group5-9       -0.6110     4.0819  -0.150 0.883304    
-## Age_Group50-59    -10.2506     3.5428  -2.893 0.012566 *  
-## Age_Group60-69    -19.3008     5.4981  -3.510 0.003837 ** 
-## Age_Group80-90    -16.9147     5.4172  -3.122 0.008091 ** 
-## ReligionBuddhist  -14.8332     5.6405  -2.630 0.020798 *  
-## ReligionChristian -15.2547     7.0671  -2.159 0.050166 .  
-## ReligionHindu      -8.7606     6.6689  -1.314 0.211676    
-## ReligionNone      -16.1864     6.0796  -2.662 0.019544 *  
-## ReligionSpiritual -32.7467     9.0582  -3.615 0.003140 ** 
-## GenderM             1.6700     2.5243   0.662 0.519799    
+## (Intercept)        36.9947    16.5161   2.240 0.044804 *  
+## B4_Med_BP_PUL      -0.1202     0.1988  -0.605 0.556553    
+## Group             -13.6741     2.8825  -4.744 0.000477 ***
+## experience10        2.7677     4.1211   0.672 0.514566    
+## experience25       16.0406     3.4216   4.688 0.000525 ***
+## experience50       18.4078     5.2599   3.500 0.004384 ** 
+## Age_Group30-39     -9.5698     4.4268  -2.162 0.051547 .  
+## Age_Group40-49    -12.5948     5.0262  -2.506 0.027619 *  
+## Age_Group5-9       -0.7577     4.2762  -0.177 0.862307    
+## Age_Group50-59     -9.9441     3.8698  -2.570 0.024562 *  
+## Age_Group60-69    -18.3290     6.8675  -2.669 0.020450 *  
+## Age_Group80-90    -16.4685     5.8905  -2.796 0.016171 *  
+## ReligionBuddhist  -15.3564     6.2059  -2.475 0.029251 *  
+## ReligionChristian -15.1332     7.3515  -2.059 0.061932 .  
+## ReligionHindu      -8.9347     6.9563  -1.284 0.223245    
+## ReligionNone      -16.6615     6.5813  -2.532 0.026341 *  
+## ReligionSpiritual -34.9426    12.7635  -2.738 0.018008 *  
+## GenderM             1.6593     2.6206   0.633 0.538502    
+## pre_existing_BP    -0.8554     3.3621  -0.254 0.803483    
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 4.084 on 13 degrees of freedom
-## Multiple R-squared:  0.818,  Adjusted R-squared:  0.5801 
-## F-statistic: 3.438 on 17 and 13 DF,  p-value: 0.01443</code></pre>
+## Residual standard error: 4.24 on 12 degrees of freedom
+## Multiple R-squared:  0.819,  Adjusted R-squared:  0.5475 
+## F-statistic: 3.017 on 18 and 12 DF,  p-value: 0.02798</code></pre>
 </div>
 <div id="diff-from-baseline-models-color" class="section level5">
 <h5>Diff from baseline Models : Color</h5>
@@ -611,156 +621,103 @@ summary(e_mod)</code></pre>
 ## F-statistic: 1.108 on 18 and 12 DF,  p-value: 0.4382</code></pre>
 <pre class="r"><code>cat(&quot;Meditation pulse difference by Group, Experience, Age, Religion and Gender \n&quot;)</code></pre>
 <pre><code>## Meditation pulse difference by Group, Experience, Age, Religion and Gender</code></pre>
-<pre class="r"><code>e_mod = lm(col_pul_diff~B4_Med_BP_PUL+Group+experience + Age_Group + Religion + Gender, 
+<pre class="r"><code>e_mod = lm(col_pul_diff~B4_Med_BP_PUL+Group+experience + Age_Group + Religion + Gender + pre_existing_BP, 
            data = d2)
 summary(e_mod)</code></pre>
 <pre><code>## 
 ## Call:
 ## lm(formula = col_pul_diff ~ B4_Med_BP_PUL + Group + experience + 
-##     Age_Group + Religion + Gender, data = d2)
+##     Age_Group + Religion + Gender + pre_existing_BP, data = d2)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -13.476  -1.882   0.000   1.151  10.463 
+## -13.566  -1.911   0.000   1.295  10.474 
 ## 
 ## Coefficients:
 ##                   Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)         8.7337    28.7544   0.304    0.766
-## B4_Med_BP_PUL      -0.2298     0.2833  -0.811    0.432
-## Group               0.7925     4.7176   0.168    0.869
-## experience10       -5.4990     7.1863  -0.765    0.458
-## experience25       -3.8958     5.8262  -0.669    0.515
-## experience50        2.3420     9.1079   0.257    0.801
-## Age_Group30-39     -1.8646     7.6901  -0.242    0.812
-## Age_Group40-49      5.5806     8.2114   0.680    0.509
-## Age_Group5-9       -2.8685     7.3887  -0.388    0.704
-## Age_Group50-59      2.1732     6.4128   0.339    0.740
-## Age_Group60-69      3.0607     9.9523   0.308    0.763
-## Age_Group80-90      1.8184     9.8059   0.185    0.856
-## ReligionBuddhist    5.3082    10.2101   0.520    0.612
-## ReligionChristian   4.3244    12.7923   0.338    0.741
-## ReligionHindu       4.7554    12.0716   0.394    0.700
-## ReligionNone        1.3938    11.0048   0.127    0.901
-## ReligionSpiritual   2.0382    16.3964   0.124    0.903
-## GenderM             2.5720     4.5693   0.563    0.583
+## (Intercept)        8.52239   29.95754   0.284    0.781
+## B4_Med_BP_PUL     -0.20395    0.36050  -0.566    0.582
+## Group              0.56812    5.22843   0.109    0.915
+## experience10      -5.50075    7.47495  -0.736    0.476
+## experience25      -3.72938    6.20617  -0.601    0.559
+## experience50       2.48207    9.54051   0.260    0.799
+## Age_Group30-39    -1.95164    8.02951  -0.243    0.812
+## Age_Group40-49     5.97689    9.11675   0.656    0.524
+## Age_Group5-9      -2.99851    7.75633  -0.387    0.706
+## Age_Group50-59     2.44487    7.01925   0.348    0.734
+## Age_Group60-69     3.92202   12.45652   0.315    0.758
+## Age_Group80-90     2.21387   10.68440   0.207    0.839
+## ReligionBuddhist   4.84443   11.25641   0.430    0.675
+## ReligionChristian  4.43220   13.33432   0.332    0.745
+## ReligionHindu      4.60121   12.61758   0.365    0.722
+## ReligionNone       0.97267   11.93743   0.081    0.936
+## ReligionSpiritual  0.09197   23.15083   0.004    0.997
+## GenderM            2.56250    4.75340   0.539    0.600
+## pre_existing_BP   -0.75813    6.09836  -0.124    0.903
 ## 
-## Residual standard error: 7.393 on 13 degrees of freedom
-## Multiple R-squared:  0.4522, Adjusted R-squared:  -0.2642 
-## F-statistic: 0.6312 on 17 and 13 DF,  p-value: 0.8151</code></pre>
+## Residual standard error: 7.69 on 12 degrees of freedom
+## Multiple R-squared:  0.4529, Adjusted R-squared:  -0.3677 
+## F-statistic: 0.5519 on 18 and 12 DF,  p-value: 0.8767</code></pre>
 </div>
 <div id="models-on-meditation-data" class="section level3">
 <h3>Models on meditation data</h3>
 <div id="is-this-the-correct-interaction-term-years_practice-group" class="section level5">
 <h5>Is this the correct interaction term: Years_practice * Group?</h5>
-<pre class="r"><code>str(d2)</code></pre>
-<pre><code>## Classes 'data.table' and 'data.frame':   31 obs. of  24 variables:
-##  $ Group                             : num  1 0 1 0 1 0 1 0 1 1 ...
-##  $ caffeinated_drinks                : num  0.5 2 2 1 3 1 1 1 2 2 ...
-##  $ Age_Group                         : chr  &quot;40-49&quot; &quot;40-49&quot; &quot;50-59&quot; &quot;50-59&quot; ...
-##  $ Gender                            : chr  &quot;F&quot; &quot;F&quot; &quot;M&quot; &quot;F&quot; ...
-##  $ Religion                          : chr  &quot;Buddhist&quot; &quot;Buddhist&quot; &quot;Buddhist&quot; &quot;Spiritual&quot; ...
-##  $ Years_practice                    : int  25 10 45 47 24 0 0 0 0 2 ...
-##  $ hours_since_last_caffeinated_drink: num  6 10 6 3 5 1 6 6 0.7 2 ...
-##  $ previous_strenuous_activity       : chr  &quot;Yes&quot; &quot;No&quot; &quot;Yes&quot; &quot;Maybe (walking)&quot; ...
-##  $ Before_Meditation_how_relaxed     : chr  &quot;a little tense&quot; &quot;a little tense&quot; &quot;relaxed&quot; &quot;relaxed&quot; ...
-##  $ in_person                         : num  0 0 0 0 1 1 1 1 0 1 ...
-##  $ pre_existing_BP                   : num  1 2 2 1 2 2 2 3 3 2 ...
-##  $ B4_Med_BP_Sys                     : int  112 107 114 134 119 131 108 130 127 114 ...
-##  $ B4_Med_BP_PUL                     : int  55 74 78 97 75 76 71 71 90 81 ...
-##  $ After_Med_BP_Sys                  : int  96 110 122 108 121 125 111 121 106 96 ...
-##  $ After_Med_BP_PUL                  : int  59 75 85 95 79 76 64 68 89 79 ...
-##  $ B4_color_BP_Sys                   : int  108 122 123 121 124 128 111 131 126 116 ...
-##  $ B4_color_BP_Pul                   : int  54 79 79 100 77 79 63 74 91 85 ...
-##  $ After_color_BP_Sys                : int  94 101 109 113 116 130 110 128 128 111 ...
-##  $ After_color_BP_Pul                : int  59 75 83 93 82 72 68 74 88 77 ...
-##  $ experience                        : Factor w/ 4 levels &quot;0&quot;,&quot;10&quot;,&quot;25&quot;,..: 3 2 4 4 3 1 1 1 1 2 ...
-##  $ med_sys_diff                      : int  -16 3 8 -26 2 -6 3 -9 -21 -18 ...
-##  $ col_sys_diff                      : int  -14 -21 -14 -8 -8 2 -1 -3 2 -5 ...
-##  $ med_pul_diff                      : int  4 1 7 -2 4 0 -7 -3 -1 -2 ...
-##  $ col_pul_diff                      : int  5 -4 4 -7 5 -7 5 0 -3 -8 ...
-##  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
 <pre class="r"><code># On meditation Sys
-m1 &lt;- lm(med_sys_diff ~ B4_Med_BP_Sys + Age_Group + Gender + previous_strenuous_activity + Before_Meditation_how_relaxed + Years_practice + Group +  hours_since_last_caffeinated_drink + in_person, data=d2)
+m1 &lt;- lm(med_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
 
 # On meditation pulse
-m2 &lt;- lm(med_pul_diff ~ B4_Med_BP_PUL + Age_Group + Gender + previous_strenuous_activity + Before_Meditation_how_relaxed + Years_practice + Group +  hours_since_last_caffeinated_drink + in_person, data=d2)</code></pre>
+m2 &lt;- lm(med_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)</code></pre>
 </div>
 </div>
 <div id="models-on-coloring-data" class="section level3">
 <h3>Models on coloring data</h3>
 <pre class="r"><code># On coloring systolic
-m3 &lt;- lm(col_sys_diff ~ B4_Med_BP_Sys + Age_Group + Gender + previous_strenuous_activity + Before_Meditation_how_relaxed + Years_practice + Group +  hours_since_last_caffeinated_drink + in_person, data=d2)
+m3 &lt;- lm(col_sys_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
 
 # On coloring pulse &amp; group interaction
-m4 &lt;- lm(col_pul_diff ~ B4_Med_BP_PUL + Age_Group + Gender + previous_strenuous_activity + Before_Meditation_how_relaxed + Years_practice + Group +  hours_since_last_caffeinated_drink + in_person, data=d2)
+m4 &lt;- lm(col_pul_diff ~ pre_existing_BP + Years_practice + Group + Years_practice * Group + caffeinated_drinks + hours_since_last_caffeinated_drink + in_person, data=d2)
 
-stargazer(m1, m3, m2, m4, type = &quot;text&quot;)</code></pre>
+stargazer(m1, m2, m3, m4, type = &quot;text&quot;)</code></pre>
 <pre><code>## 
-## ========================================================================================
-##                                                      Dependent variable:                
-##                                      ---------------------------------------------------
-##                                      med_sys_diff col_sys_diff med_pul_diff col_pul_diff
-##                                          (1)          (2)          (3)          (4)     
-## ----------------------------------------------------------------------------------------
-## B4_Med_BP_Sys                          -0.438**      0.111                              
-##                                        (0.152)      (0.174)                             
-##                                                                                         
-## B4_Med_BP_PUL                                                     -0.152       -0.125   
-##                                                                  (0.129)      (0.190)   
-##                                                                                         
-## Age_Group30-39                          5.512        -3.593       -0.430       -2.215   
-##                                        (8.816)      (10.079)     (5.419)      (7.956)   
-##                                                                                         
-## Age_Group40-49                          9.145        0.474        -5.495       7.619    
-##                                        (7.174)      (8.202)      (4.392)      (6.449)   
-##                                                                                         
-## Age_Group5-9                           -11.152     -26.363***     1.786        -3.462   
-##                                        (7.219)      (8.253)      (4.247)      (6.237)   
-##                                                                                         
-## Age_Group50-59                         18.573**      -1.101       -7.268       7.426    
-##                                        (8.106)      (9.268)      (4.896)      (7.189)   
-##                                                                                         
-## Age_Group60-69                         21.918*       -7.280      -11.512       6.803    
-##                                        (11.626)     (13.291)     (6.946)      (10.199)  
-##                                                                                         
-## Age_Group80-90                          10.468       2.063        -6.745       5.068    
-##                                        (9.968)      (11.396)     (6.090)      (8.943)   
-##                                                                                         
-## GenderM                                 1.734        5.407        -2.081       3.521    
-##                                        (3.956)      (4.523)      (2.467)      (3.622)   
-##                                                                                         
-## previous_strenuous_activityNo           13.790      -10.645       8.649*       -1.259   
-##                                        (7.919)      (9.053)      (4.931)      (7.241)   
-##                                                                                         
-## previous_strenuous_activityYes          12.349      -10.178      11.790**      0.216    
-##                                        (8.014)      (9.162)      (5.116)      (7.512)   
-##                                                                                         
-## Before_Meditation_how_relaxedrelaxed    0.381        -2.767       5.164*       -2.535   
-##                                        (4.474)      (5.115)      (2.767)      (4.064)   
-##                                                                                         
-## Years_practice                          -0.060       -0.139      0.230**       0.129    
-##                                        (0.141)      (0.161)      (0.084)      (0.124)   
-##                                                                                         
-## Group                                   -1.332       5.940       -5.807**      2.371    
-##                                        (3.712)      (4.244)      (2.230)      (3.274)   
-##                                                                                         
-## hours_since_last_caffeinated_drink      0.364        0.165        0.051        0.149    
-##                                        (0.273)      (0.312)      (0.161)      (0.236)   
-##                                                                                         
-## in_person                               0.952        4.828        -2.073       8.237*   
-##                                        (4.194)      (4.794)      (2.793)      (4.101)   
-##                                                                                         
-## Constant                                20.670      -16.127       7.796        -5.705   
-##                                        (22.801)     (26.066)     (13.599)     (19.967)  
-##                                                                                         
-## ----------------------------------------------------------------------------------------
-## Observations                              31           31           31           31     
-## R2                                      0.640        0.596        0.762        0.529    
-## Adjusted R2                             0.281        0.193        0.525        0.058    
-## Residual Std. Error (df = 15)           7.290        8.334        4.345        6.380    
-## F Statistic (df = 15; 15)               1.780        1.478       3.208**       1.124    
-## ========================================================================================
-## Note:                                                        *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+## ======================================================================================
+##                                                    Dependent variable:                
+##                                    ---------------------------------------------------
+##                                    med_sys_diff med_pul_diff col_sys_diff col_pul_diff
+##                                        (1)          (2)          (3)          (4)     
+## --------------------------------------------------------------------------------------
+## pre_existing_BP                       -0.476       0.766        1.646        0.271    
+##                                      (3.809)      (2.704)      (4.527)      (3.193)   
+##                                                                                       
+## Years_practice                       -0.440*       0.047        0.068        -0.025   
+##                                      (0.221)      (0.157)      (0.263)      (0.185)   
+##                                                                                       
+## Group                                 -5.470      -7.434**      7.001        -1.595   
+##                                      (3.909)      (2.775)      (4.646)      (3.277)   
+##                                                                                       
+## caffeinated_drinks                    2.090        -0.130       -1.836       0.270    
+##                                      (1.543)      (1.095)      (1.833)      (1.293)   
+##                                                                                       
+## hours_since_last_caffeinated_drink   0.454**       0.215        -0.373       0.121    
+##                                      (0.215)      (0.153)      (0.255)      (0.180)   
+##                                                                                       
+## in_person                             -2.942       -0.148       3.164        5.074    
+##                                      (4.212)      (2.990)      (5.006)      (3.531)   
+##                                                                                       
+## Years_practice:Group                 0.600**       0.216        -0.331       0.250    
+##                                      (0.237)      (0.169)      (0.282)      (0.199)   
+##                                                                                       
+## Constant                              -6.397       -0.747       -8.455       -7.012   
+##                                      (10.991)     (7.802)      (13.061)     (9.212)   
+##                                                                                       
+## --------------------------------------------------------------------------------------
+## Observations                            31           31           31           31     
+## R2                                    0.327        0.369        0.184        0.192    
+## Adjusted R2                           0.122        0.177        -0.064       -0.054   
+## Residual Std. Error (df = 23)         8.054        5.717        9.571        6.750    
+## F Statistic (df = 7; 23)              1.595        1.922        0.741        0.781    
+## ======================================================================================
+## Note:                                                      *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
 <div id="results" class="section level5">
 <h5>Results:</h5>
 <ul>
