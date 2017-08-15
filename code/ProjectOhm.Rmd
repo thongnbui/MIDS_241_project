@@ -293,7 +293,6 @@ cat("   Color-first Group Pulse Difference:", round(ate_group_0_diff, 2), "\n")
 ```
 Based on these results, it would be best to include either Age, or Experience or Recruiter in a model because they are correlated.  Always include Group, as the washout period may have been less effected that we might have hoped.
 
-
 ###Model Building:
 
 #####Meditation Effects:
@@ -322,6 +321,7 @@ med_pul_age_ols = lm(med_pul_diff ~ Group + pre_med_pul + age + Gender +
 
 #summary(med_pul_exp_ols)
 ```
+
 
 
 #####Color Effects:
@@ -413,9 +413,11 @@ In contrast, those who identified with a particular **Religion** saw significant
 
 ##Conclusion
 
-While there are some statistically significant coefficients from the models above to measure the effect of meditation showing some promising effect of meditation on blood pressure, the t-test indicates that there are no significant differences between the effects of meditation and coloring on blood pressure and pulses therefore we can't make any causal claim on meditation effect on blood pressure.
+While there are some statistically significant coefficients from the models above to measure the effect of both meditation and coloring on blood pressure, the t-tests indicate that there are no significant differences between the effects of meditation and coloring on blood pressure and pulses. This implies that meditation as well as coloring, and potentially some other methods of relaxation may have similar impacts on lowering blood pressure
+which is an interesting discovery that therefore we can't make any causal claim on meditation effect on blood pressure.
 
 ### Issues/Concerns
+* The hardest part of the experiment is the decision of what particular form of meditation to choose from and how long the meditation should be. We decided to go with 15-minute guided meditation from https://www.appropriateresponse.com/teachings/ so our analysis and conclusion can only be based on this particular setup. There are definitely more room to explore the impact of various forms and lengths of meditation.
 * Subjects are our friends and relatives. This sample is not randomized from the general population therefore doesn't represent the population's distribution hence no generalization can be drawn from our experiment even if we find causal effect from it.
 * Wash-out period of 5 minutes may not be sufficient to remove the treatment of the first exercise on the second one.
 * The on-line person with ID=13 seems to have unreliable blood pressure measurements which indicates a potential precision issue with the blood pressure device. It can also be an issue with how the experiment was conducted on-line.
@@ -424,9 +426,13 @@ While there are some statistically significant coefficients from the models abov
 
 Based on these facts, we believe more future work to be done to have a better designed experiment in order to the determine if there is a causal effect on lowering blood pressure.
 
-###Future Research:
+###Future Research
 
 Learning from our current experiment's constraints in time, money to get the best blood pressure measurement devices and the ability to find people to participate, we see more future research can be explored in this area to see if the promising influence of meditation practice on lowering blood pressure by using:
+
 * Random selection from general population with larger size.
 * better blood pressure device and measurement.
+* longer periods and various forms of meditation.
 * Instead of using in-person experiment which may have issue with insufficient wash-out period, we can have 2 separate groups for treatment and control to avoid this issue
+
+Other forms of relaxation such as reading, listening to relaxing music, etc. and their impacts on blood pressure can be studied.
