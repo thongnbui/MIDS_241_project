@@ -390,6 +390,242 @@ stargazer(m1, m2,type="text")
 
 These models are comparing post-meditation and post-coloring BPs to BP before any exercises start? Is this a valid way to do it? That's why we have different result from the previous models?
 
+
+### adding group
+
+```{r}
+d2.bp = melt(d2, id.vars = c("ID", "Group"), measure.vars = c("b4_all_sys", "B4_Med_BP_Sys", "After_Med_BP_Sys","B4_color_BP_Sys", "After_color_BP_Sys"), variable.name = "bp_type", value.name = "bp")
+#d2.bp$b4_all <- ifelse(d2.bp$bp_type == "b4_all_sys", 1, 0)
+d2.bp$b4_med <- ifelse(d2.bp$bp_type == "B4_Med_BP_Sys", 1, 0)
+d2.bp$after_med <- ifelse(d2.bp$bp_type == "After_Med_BP_Sys", 1, 0)
+d2.bp$b4_color <- ifelse(d2.bp$bp_type == "B4_color_BP_Sys", 1, 0)
+d2.bp$after_color <- ifelse(d2.bp$bp_type == "After_color_BP_Sys", 1, 0)
+#summary(d2.bp)
+```
+
+```{r}
+d2.pulse = melt(d2, id.vars = c("ID", "Group"), measure.vars = c("b4_all_pulse", "B4_Med_BP_PUL", "After_Med_BP_PUL","B4_color_BP_Pul", "After_color_BP_Pul"), variable.name = "pulse_type", value.name = "pulse")
+#d2.pulse$b4_all <- ifelse(d2.pulse$pulse_type == "b4_all_pulse", 1, 0)
+d2.pulse$b4_med <- ifelse(d2.pulse$pulse_type == "B4_Med_BP_PUL", 1, 0)
+d2.pulse$after_med <- ifelse(d2.pulse$pulse_type == "After_Med_BP_PUL", 1, 0)
+d2.pulse$b4_color <- ifelse(d2.pulse$pulse_type == "B4_color_BP_Pul", 1, 0)
+d2.pulse$after_color <- ifelse(d2.pulse$pulse_type == "After_color_BP_Pul", 1, 0)
+#summary(d2.pulse)
+```
+
+```{r}
+m1 <- lm(bp ~ b4_med + b4_color + after_color + after_med + ID + Group + Group*after_med + Group*after_color, data=d2.bp)
+m2 <- lm(pulse ~ b4_med + b4_color + after_color + after_med + ID + Group + Group*after_med + Group*after_color, data=d2.pulse)
+
+#coeftest(m1, vcovHC(m1))
+stargazer(m1, m2,type="text")
+```
+
+```{r}
+bp1 <- d2.bp[d2.bp$Group==1]
+bp0 <- d2.bp[d2.bp$Group==0]
+pulse1 <- d2.pulse[d2.pulse$Group==1]
+pulse0 <- d2.pulse[d2.pulse$Group==0]
+```
+
+```{r}
+m1a <- lm(bp ~ b4_med + b4_color + after_color + after_med + ID, data=bp1)
+m1b <- lm(bp ~ b4_med + b4_color + after_color + after_med + ID, data=bp0)
+m2a <- lm(pulse ~ b4_med + b4_color + after_color + after_med + ID, data=pulse1)
+m2b <- lm(pulse ~ b4_med + b4_color + after_color + after_med + ID, data=pulse0)
+#coeftest(m1, vcovHC(m1))
+stargazer(m1a, m1b, m2a, m2b, type="text")
+```
+
+##### Rethinking breakdown
+
+
+
+
+
+```{r}
+
+# Create table for looking at sys bp outcome alone
+dm = d2
+
+dm$BPM = dm$B4_Med_BP_Sys - dm$After_Med_BP_Sys
+dm$BPC = dm$B4_color_BP_Sys - dm$After_color_BP_Sys
+
+dm.bp = melt(dm, id.vars = c("ID", "Group"), measure.vars = c("BPM", "BPC"), variable.name = "bp_type", value.name = "bp_drop")
+dm.bp$M1_C0 <- ifelse(dm.bp$bp_type == "BPM", 1, 0)
+
+dm.bp
+```
+```{r}
+
+# Create table for looking at sys pulse outcome alone
+dp = d2
+
+dp$PUM = dp$B4_Med_BP_PUL - dp$After_Med_BP_PUL
+dp$PUC = dp$B4_color_BP_Pul - dp$After_color_BP_Pul
+
+dp.pu = melt(dp, id.vars = c("ID", "Group"), measure.vars = c("PUM", "PUC"), variable.name = "pulse_type", value.name = "pulse_drop")
+dp.pu$M1_C0 <- ifelse(dp.pu$pulse_type == "PUM", 1, 0)
+
+dp.pu[dp.pu$pulse_type=="PUM"]
+
+```
+
+```{r}
+outlierKD <- function(dt, var) {
+  var_name <- eval(substitute(var),eval(dt))
+  tot <- sum(!is.na(var_name))
+  na1 <- sum(is.na(var_name))
+  m1 <- mean(var_name, na.rm = T)
+  par(mfrow=c(2, 2), oma=c(0,0,3,0))
+  boxplot(var_name, main="With outliers")
+  hist(var_name, main="With outliers", xlab=NA, ylab=NA)
+  outlier <- boxplot.stats(var_name)$out
+  mo <- mean(outlier)
+  var_name <- ifelse(var_name %in% outlier, NA, var_name)
+  boxplot(var_name, main="Without outliers")
+  hist(var_name, main="Without outliers", xlab=NA, ylab=NA)
+  title("Outlier Check", outer=TRUE)
+  na2 <- sum(is.na(var_name))
+  message("Outliers identified: ", na2 - na1, " from ", tot, " observations")
+  message("Proportion (%) of outliers: ", (na2 - na1) / tot*100)
+  message("Mean of the outliers: ", mo)
+  m2 <- mean(var_name, na.rm = T)
+  message("Mean without removing outliers: ", m1)
+  message("Mean if we remove outliers: ", m2)
+  response <- readline(prompt="Do you want to remove outliers and to replace with NA? [yes/no]: ")
+  if(response == "y" | response == "yes"){
+    dt[as.character(substitute(var))] <- invisible(var_name)
+    assign(as.character(as.list(match.call())$dt), dt, envir = .GlobalEnv)
+    message("Outliers successfully removed", "\n")
+    return(invisible(dt))
+  } else{
+    message("Nothing changed", "\n")
+    return(invisible(var_name))
+  }
+}
+
+outlierKD(dp.pu, pulse_drop)
+```
+
+```{r}
+outlierKD(dm.bp, bp_drop)
+```
+
+```{r}
+dp.pu = dp.pu[dp.pu$pulse_drop<20]
+
+dp.pu = dp.pu[dp.pu$pulse_drop>-16]
+
+hist(dp.pu$pulse_drop)
+```
+
+```{r}
+
+dm.bp = dm.bp[dm.bp$bp_drop<25]
+hist(dm.bp$bp_drop)
+```
+
+
+```{r}
+
+# Create simple model predicting changes in bp and pulse based on treatment (coloring or meditation)
+m1 <- lm(bp_drop ~ M1_C0, data=dm.bp)
+m2 <- lm(pulse_drop ~ M1_C0, data=dp.pu)
+
+#coeftest(m1, vcovHC(m1))
+stargazer(m1, m2,type="text")
+```
+
+```{r}
+
+# Now add group as a covariate
+m1 <- lm(bp_drop ~ Group + M1_C0, data=dm.bp)
+m2 <- lm(pulse_drop ~ Group + M1_C0, data=dp.pu)
+
+#coeftest(m1, vcovHC(m1))
+stargazer(m1, m2,type="text")
+```
+
+```{r}
+# Now add cross-effect of group & treatment
+m1 <- lm(bp_drop ~ Group + M1_C0 + Group*M1_C0, data=dm.bp)
+m2 <- lm(pulse_drop ~ Group + M1_C0 + Group*M1_C0, data=dp.pu)
+
+#coeftest(m1, vcovHC(m1))
+stargazer(m1, m2,type="text")
+```
+
+### Note: important to at least calculate these without the outliers
+
+```{r}
+# average treatment effects of meditation
+mean(dm.bp$bp_drop[dm.bp$M1_C0==1])
+mean(dp.pu$pulse_drop[dp.pu$M1_C0==1])
+```
+```{r}
+# average treatment effects of coloring
+mean(dm.bp$bp_drop[dm.bp$M1_C0==0])
+mean(dp.pu$pulse_drop[dp.pu$M1_C0==0])
+```
+```{r}
+# average difference in treatment effects
+# On average how much more did numbers drop when coloring vs meditating?
+
+# Note:  I have not dropped outliers from this one yet...
+
+d20 = d2
+
+d20 = d20[d20$med_sys_diff<25]
+d20 = d20[d20$col_sys_diff<25]
+
+d20 = d20[d20$med_pul_diff<20]
+d20 = d20[d20$col_pul_diff<20]
+d20 = d20[d20$med_pul_diff>-16]
+d20 = d20[d20$col_pul_diff>-16]
+
+d20 = d20[d20$med_sys_<20]
+
+
+d20$bp_delta = d2$col_sys_diff - d2$med_sys_diff
+d20$pu_delta = d2$col_pul_diff - d2$med_pul_diff
+
+mean(d20$bp_delta)
+mean(d20$pu_delta)
+
+#hist(d20$bp_delta)
+
+#hist(d20$pu_delta)
+```
+
+```{r}
+# t test across both groups combined:  that effect is zero
+t.test(dm.bp$bp_drop)
+t.test(dp.pu$pulse_drop)
+```
+```{r}
+# t test on meditation group  that effect is zero
+t.test(dm.bp$bp_drop[dm.bp$M1_C0==1])
+t.test(dp.pu$pulse_drop[dp.pu$M1_C0==1])
+```
+
+```{r}
+# t test on coloring group  that effect is zero
+t.test(dm.bp$bp_drop[dm.bp$M1_C0==0])
+t.test(dp.pu$pulse_drop[dp.pu$M1_C0==0])
+```
+
+```{r}
+# t test that the meditation and coloring effects are the same
+t.test(d2$col_sys_diff, d2$med_sys_diff)
+t.test(d2$col_pul_diff, d2$med_pul_diff)
+``` 
+
+
+
+
+
+
 ##### Why there is such difference? Which ones are more reliable: simpler ones or previous ones?
 
 ### Check the significance of each treatment
@@ -402,11 +638,7 @@ t.test(d2$B4_color_BP_Pul, d2$After_color_BP_Pul)
 
 ###Difference-in-differences Estimate
 ```{r diff}
-# Create some Diff variables
-d2$col_med_sys_diff = d2$col_sys_diff - d2$med_sys_diff
-d2$col_med_pul_diff = d2$col_pul_diff - d2$med_pul_diff
-d2$pre_sys_diff= d2$B4_color_BP_Sys - d2$B4_Med_BP_Sys
-d2$pre_pul_diff= d2$B4_color_BP_Pul - d2$B4_Med_BP_PUL
+
 
 cat("Difference in differences on systolic blood pressure:", mean(d2$col_med_sys_diff))
 cat("\nDifference in differences on pulse rate:", mean(d2$col_med_pul_diff), "\n")
