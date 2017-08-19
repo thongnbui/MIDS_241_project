@@ -91,13 +91,15 @@ d <- data.table(d)
 #   0 is coloring 1st aka "color-first"
 # 3. convert string categories to numeric
 
-d2 <- d[ID != 13 , .(Group = ifelse(Group == 0, 1, 0), #Exclude 13th person & reverse groups
+d2 <- d[ID != 13 , ID, .(Group = ifelse(Group == 0, 1, 0), #Exclude 13th person & reverse groups
             Recruited_By,   caffeinated_drinks, Age_Group,     Gender,
             Religion,       Years_practice,     hours_since_last_caffeinated_drink,
             previous_strenuous_activity,        Before_Meditation_how_relaxed,
             Post_Med_focus, Enjoy_Coloring,
             in_person = ifelse(Online_in_person == 'I', 1, 0),
             pre_existing_BP = Pre_existing_blood_pressure,
+            b4_all_sys = ifelse(Group == 0, B4_Med_BP_Sys, B4_color_BP_Sys),
+            b4_all_pulse = ifelse(Group == 0, B4_Med_BP_PUL, B4_color_BP_Pul),
             B4_Med_BP_Sys, B4_Med_BP_PUL,
             After_Med_BP_Sys, After_Med_BP_PUL,
             B4_color_BP_Sys, B4_color_BP_Pul, 
@@ -270,6 +272,8 @@ Based on these results, it would be best to include either Age, or Experience or
 ###Model Building:
 
 #####Meditation Effects:
+
+
 ```{r med_mod}
 #Systolic Blood Pressure
 med_sys_exp_ols = lm(med_sys_diff ~ Group + pre_med_sys + experience + Gender + 
@@ -321,6 +325,72 @@ stargazer(med_sys_exp_ols, med_sys_age_ols, med_pul_exp_ols, med_pul_age_ols, ty
 cat("\n\nColor Model Comparison\n")
 stargazer(col_sys_exp_ols, col_sys_age_ols, col_pul_exp_ols, col_pul_age_ols, type = "text")
 ```
+
+### Simpler models
+1. From the original data table, each row:
+
++-----------+-----------+----------+--------------+-------------+----------------+
+| person_id | b4_all_bp |b4_med_bp | after_med_bp | b4_color_bp | after_color_bp |
++===========+===========+==========+==============+=============+================+
+|1          | 121       | 121      |   111        |   120       |110             |
++-----------+-----------+----------+--------------+-------------+----------------+
+
+is convert into 5 rows like this: 
+
++-----------+-----+--------+-----------+-----------+----------+-------------+
+| person_id | bp  | b4_all | b4_med    | after_med | b4_color | after_color |
++===========+=====+========+===========+===========+==========+=============+
+|1          |121  |   1    |   0       |0          |0         | 0           |
++-----------+-----+--------+-----------+-----------+----------+-------------+
+|1          |121  |   0    |   1       |0          |0         | 0           |
++-----------+-----+--------+-----------+-----------+----------+-------------+
+|1          |111  |   0    |   0       |1          |0         | 0           |
++-----------+-----+--------+-----------+-----------+----------+-------------+
+|1          |120  |   0    |   0       |0          |1         | 0           |
++-----------+-----+--------+-----------+-----------+----------+-------------+
+|1          |110  |   0    |   0       |0          |0         | 1           |
++-----------+-----+--------+-----------+-----------+----------+-------------+
+
+then build the model `bp ~ 1 + b4_all + after_med + after_color + person_id`
+
+```{r}
+d2.bp = melt(d2, id.vars = c("ID"), measure.vars = c("b4_all_sys", "B4_Med_BP_Sys", "After_Med_BP_Sys","B4_color_BP_Sys", "After_color_BP_Sys"), variable.name = "bp_type", value.name = "bp")
+#d2.bp$b4_all <- ifelse(d2.bp$bp_type == "b4_all_sys", 1, 0)
+d2.bp$b4_med <- ifelse(d2.bp$bp_type == "B4_Med_BP_Sys", 1, 0)
+d2.bp$after_med <- ifelse(d2.bp$bp_type == "After_Med_BP_Sys", 1, 0)
+d2.bp$b4_color <- ifelse(d2.bp$bp_type == "B4_color_BP_Sys", 1, 0)
+d2.bp$after_color <- ifelse(d2.bp$bp_type == "After_color_BP_Sys", 1, 0)
+#summary(d2.bp)
+```
+
+Now, we build the same data table for pulse data
+```{r}
+d2.pulse = melt(d2, id.vars = c("ID"), measure.vars = c("b4_all_pulse", "B4_Med_BP_PUL", "After_Med_BP_PUL","B4_color_BP_Pul", "After_color_BP_Pul"), variable.name = "pulse_type", value.name = "pulse")
+#d2.pulse$b4_all <- ifelse(d2.pulse$pulse_type == "b4_all_pulse", 1, 0)
+d2.pulse$b4_med <- ifelse(d2.pulse$pulse_type == "B4_Med_BP_PUL", 1, 0)
+d2.pulse$after_med <- ifelse(d2.pulse$pulse_type == "After_Med_BP_PUL", 1, 0)
+d2.pulse$b4_color <- ifelse(d2.pulse$pulse_type == "B4_color_BP_Pul", 1, 0)
+d2.pulse$after_color <- ifelse(d2.pulse$pulse_type == "After_color_BP_Pul", 1, 0)
+#summary(d2.pulse)
+```
+
+2. Now we are building the simple models
+```{r}
+m1 <- lm(bp ~ 1 + b4_med + b4_color + after_color + after_med + ID, data=d2.bp)
+m2 <- lm(pulse ~ 1 + b4_med + b4_color + after_color + after_med + ID, data=d2.pulse)
+
+#coeftest(m1, vcovHC(m1))
+stargazer(m1, m2,type="text")
+```
+
+##### Now we are seeing the opposite of what we found earlier: 
+* both mediation and coloring are both statistically significant at lowering blood pressure!
+* both mediation and coloring has no statistical significance at lowering pulse
+* What can we conclude from ID?
+
+These models are comparing post-meditation and post-coloring BPs to BP before any exercises start? Is this a valid way to do it? That's why we have different result from the previous models?
+
+##### Why there is such difference? Which ones are more reliable: simpler ones or previous ones?
 
 ### Check the significance of each treatment
 ```{r}
