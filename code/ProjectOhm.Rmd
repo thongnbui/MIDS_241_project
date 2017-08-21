@@ -276,9 +276,9 @@ cat("   Color-first Group Pulse Difference:", round(ate_group_0_diff, 2), "\n")
 ###### OVerall, since we are doing within-subject design and we are facing general limitations in this initial study with a small sample size, we consider the generalizability of the model to be a somewhat secondary concern, which can only be more adequately addressed in an expanded study with a much larger sample size.
 
 
-# Model 1:  Looking at the effect of each
+# Model 1:  Looking at the effect of each treatment
 
-Predict outcome blood pressure based on which measurement is being taken.
+Predict outcome blood pressure based on when each measurement is being taken.
 
 1. From the original data table, each row:
 
