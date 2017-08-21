@@ -491,16 +491,16 @@ Five of the top improvements we would want to make are:
 
 ### Check the significance of each treatment
 ```{r}
-t.test(d2$B4_Med_BP_Sys, d2$After_Med_BP_Sys)
-t.test(d2$B4_Med_BP_PUL, d2$After_Med_BP_PUL)
-t.test(d2$B4_color_BP_Sys, d2$After_color_BP_Sys)
-t.test(d2$B4_color_BP_Pul, d2$After_color_BP_Pul)
+t.test(d2$B4_Med_BP_Sys, d2$After_Med_BP_Sys, paired=TRUE)
+t.test(d2$B4_Med_BP_PUL, d2$After_Med_BP_PUL, paired=TRUE)
+t.test(d2$B4_color_BP_Sys, d2$After_color_BP_Sys, paired=TRUE)
+t.test(d2$B4_color_BP_Pul, d2$After_color_BP_Pul, paired=TRUE)
 ```
 
 ### Check the significance of the difference-in-differences
 ```{r}
-t.test(d2$col_sys_diff, d2$med_sys_diff)
-t.test(d2$col_pul_diff, d2$med_pul_diff)
+t.test(d2$col_sys_diff, d2$med_sys_diff, paired=TRUE)
+t.test(d2$col_pul_diff, d2$med_pul_diff, paired=TRUE)
 ```
 
 ### Here is some of the original analysis which led to over-fitting.
