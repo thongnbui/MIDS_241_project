@@ -554,21 +554,26 @@ col_pul_age_ols = lm(col_pul_diff ~ Group + pre_col_pul + age +
 
 ```{r stargazer_ind}
 #compare meditation models
-cat("Meditation Model Comparison\n")
+#cat("Meditation Model Comparison\n")
 #stargazer(med_sys_exp_ols, med_sys_age_ols, med_pul_exp_ols, med_pul_age_ols, type = "text")
 #compare coloring models
-cat("\n\nColor Model Comparison\n")
+#cat("\n\nColor Model Comparison\n")
 #stargazer(col_sys_exp_ols, col_sys_age_ols, col_pul_exp_ols, col_pul_age_ols, type = "text")
 ```
 
 
 
 ### Difference-in-differences Estimate
+
+### Create some Diff variables
 ```{r diff}
+d2$col_med_sys_diff = d2$col_sys_diff - d2$med_sys_diff
+d2$col_med_pul_diff = d2$col_pul_diff - d2$med_pul_diff
+d2$pre_sys_diff= d2$B4_color_BP_Sys - d2$B4_Med_BP_Sys
+d2$pre_pul_diff= d2$B4_color_BP_Pul - d2$B4_Med_BP_PUL
+#cat("Difference in differences on systolic blood pressure:", mean(d2$col_med_sys_diff))
+#cat("\nDifference in differences on pulse rate:", mean(d2$col_med_pul_diff), "\n")
 
-
-cat("Difference in differences on systolic blood pressure:", mean(d2$col_med_sys_diff))
-cat("\nDifference in differences on pulse rate:", mean(d2$col_med_pul_diff), "\n")
 ```
 
 
@@ -590,6 +595,6 @@ dd_pul_ols2 = lm(col_med_pul_diff~ Group + pre_pul_diff + age + Gender +
                    Religion +  caffeinated_drinks + in_person + 
                    prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
 
-stargazer(dd_sys_ols1, dd_sys_ols2, dd_pul_ols1, dd_pul_ols2,type = "text")
+#stargazer(dd_sys_ols1, dd_sys_ols2, dd_pul_ols1, dd_pul_ols2,type = "text")
 ```
 
