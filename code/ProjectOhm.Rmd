@@ -11,7 +11,7 @@ Our entire project code and documents can be accessed from https://github.com/th
 ##Abstract:
 We examine the effects of meditation on blood pressure and pulse rates. In particular, using a within-subject experimental design, we compare the effects of a single fifteen-minute meditation session to a similar session of coloring graphic shapes. Subjects were randomly assigned to undergo either the meditation session first, followed by coloring, or the coloring session first, followed by meditation. In each case, a five-minute washout period was inserted between the sessions.  
 
-Generally, we find that both meditation and coloring have some lowering effect on blood pressure and pulse. Details of our analysis will be further explored below.
+Generally, we find that both meditation and coloring have some lowering effect on blood pressure, while the difference in effect between the two treatments is inconclusive.  The pulse results are inconclusive for both each treatment individually as well as comparatively.  Details of our analysis will be further explored below.
 
 ##Introduction:
 Meditation has been used for thousands of years by religious practitioners for spiritual growth. In modern times, it is promoted as a means to reduce stress. Many scientific studies have shown its effectiveness in reducing anxiety and other negative states. 
@@ -21,6 +21,7 @@ Our study seeks to take this a step further: is it meditation that decreases str
 
 ###Why does it matter?
 High blood pressure, left untreated, can harm a person's health for years before symptoms develop. Patients with high blood pressure may become disabled or suffer a fatal heart attack. About half of the people with high blood pressure who are left untreated die of heart disease, and another third die of stroke.  
+Our initial study may be limited to evaluating immediate blood pressure impacts, but even short term drops in blood pressure may potentially hold value in heart health and anxiety reduction.
 
 ####Systolic vs Diastolic Blood Pressure vs Pulse
 Our study uses portable wrist blood pressure monitors to measure three numbers: systolic and diastolic blood pressure, and pulse rates. Of these numbers the most important are systolic blood pressure (the first number given when reporting blood pressure), and pulse.  Diastolic pressure is generally only used during an emergency such as a cardiac arrest. Pulse is more variable than systolic pressure, but both are indicators of stress levels. 
@@ -43,7 +44,7 @@ Within-subject designs have a few potential sources of bias: treatment assignmen
 
 To avoid anticipation, subjects were not told what the sessions would entail until the sessions began. There may have been some guesswork, due to our pre-experiment questions that identified years of meditation experience, or to the packages that arrived in the mail that included colored pencils. However, the details were not known to the subjects in advance. 
 
-A washout of five minutes was used to combat persistence. While it might have been better to take a longer period of time to 'reset' our subjects blood pressures, we tried to keep this time short in consideration of the overall time our volunteers were giving to the study.  
+A washout of five minutes was used to combat persistence. While it might have been better to take a longer period of time to 'reset' our subjects' blood pressures, we tried to keep this time short in consideration of the overall time our volunteers were giving to the study.  
 
 #####Why Coloring
 Coloring is used quite often in medical experiments as a control activity.  We used it because of its similarity to meditation - subjects are focused, seated, not interacting with other people, not required to engage in verbal processing, and silent. It was the closest activity we found that included many of the calming features of meditation, without actually being meditation. 
@@ -62,7 +63,7 @@ While we were pleased to find affordable mobile blood pressure monitors, wrist m
 Experienced meditators often aim for 30 to 60 minutes in a given session. However, this length of time might be uncomfortable for inexperienced meditators, so we limited the sessions to 15 minutes.  An interesting follow-up study might test the results of a longer meditation, using only subjects with meditation experience. 
 
 #####Subject participation
-The original study design called for subjects to test the long-term results of meditation. For practicality and do avoid non-compliance or attrition, the design was altered to measure the results of a single meditation. A follow up study might take advantage of subjects on a meditation retreat to look for longer term effects, although the generalizability of such findings would certainly be called into question.
+The original study design called for subjects to test the long-term results of meditation. For practicality and to avoid non-compliance or attrition, the design was altered to measure the results of a single meditation. A follow up study might take advantage of subjects on a meditation retreat to look for longer term effects, although the generalizability of such findings would certainly be called into question.
 
 ##Data:
 ```{r libraries, message=FALSE, warning=FALSE}
@@ -73,6 +74,9 @@ library(stargazer)
 library(RColorBrewer)
 library(cobalt)
 library(car)
+library(rlm)
+require(foreign)
+require(MASS)
 ```
 
 ###Data Exploration
@@ -171,6 +175,8 @@ d2$att.weights <- with(d2, Group + (1-Group)*p.score/(1-p.score))
 bal.tab(covs, treat = d2$Group, weights = d2$att.weights,
          method = "weighting", estimand="ATE")
 ```
+
+
 #####Covariate Balance Concerns
 Of the covariates analyzed, the following stand out as unbalanced: caffeinated drinks, religion, and years of practice. The Med-First group is more likely to have participants who drink caffeine, are Buddhist and have more meditation experience, while the Color-First group is more likely to include subjects that do not identify with a particular religion. 
 
@@ -265,11 +271,239 @@ ate_group_0_diff = mean(d2$col_pul_diff[d$Group==FALSE], na.rm=TRUE) -
    mean(d2$med_pul_diff[d2$Group==FALSE], na.rm=TRUE)
 cat("   Color-first Group Pulse Difference:", round(ate_group_0_diff, 2), "\n")
 
+```
+
+###### OVerall, since we are doing within-subject design and we are facing general limitations in this initial study with a small sample size, we consider the generalizability of the model to be a somewhat secondary concern, which can only be more adequately addressed in an expanded study with a much larger sample size.
+
+
+# Model 1:  Looking at the effect of each
+
+Predict outcome blood pressure based on which measurement is being taken.
+
+1. From the original data table, each row:
+
++-----------+-----------+----------+--------------+-------------+----------------+
+| person_id | b4_all_bp |b4_med_bp | after_med_bp | b4_color_bp | after_color_bp |
++===========+===========+==========+==============+=============+================+
+|1          | 121       | 121      |   111        |   120       |110             |
++-----------+-----------+----------+--------------+-------------+----------------+
+
+is convert into 5 rows like this: 
+
++-----------+-----+--------+-----------+-----------+----------+-------------+
+| person_id | bp  | b4_all | b4_med    | after_med | b4_color | after_color |
++===========+=====+========+===========+===========+==========+=============+
+|1          |121  |   1    |   0       |0          |0         | 0           |
++-----------+-----+--------+-----------+-----------+----------+-------------+
+|1          |121  |   0    |   1       |0          |0         | 0           |
++-----------+-----+--------+-----------+-----------+----------+-------------+
+|1          |111  |   0    |   0       |1          |0         | 0           |
++-----------+-----+--------+-----------+-----------+----------+-------------+
+|1          |120  |   0    |   0       |0          |1         | 0           |
++-----------+-----+--------+-----------+-----------+----------+-------------+
+|1          |110  |   0    |   0       |0          |0         | 1           |
++-----------+-----+--------+-----------+-----------+----------+-------------+
+
+then build the model `bp ~ 1 + b4_all + after_med + after_color + person_id`
+
+```{r}      
+
+d2.bp = melt(d2, id.vars = c("ID", "Group"), measure.vars = c("b4_all_sys", "B4_Med_BP_Sys", "After_Med_BP_Sys","B4_color_BP_Sys", "After_color_BP_Sys"), variable.name = "bp_type", value.name = "bp")
+#d2.bp$b4_all <- ifelse(d2.bp$bp_type == "b4_all_sys", 1, 0)
+d2.bp$b4_med <- ifelse(d2.bp$bp_type == "B4_Med_BP_Sys", 1, 0)
+d2.bp$after_med <- ifelse(d2.bp$bp_type == "After_Med_BP_Sys", 1, 0)
+d2.bp$b4_color <- ifelse(d2.bp$bp_type == "B4_color_BP_Sys", 1, 0)
+d2.bp$after_color <- ifelse(d2.bp$bp_type == "After_color_BP_Sys", 1, 0)
+#summary(d2.bp)
+```
+
+Now, we build the same data table for pulse data
+```{r}
+d2.pulse = melt(d2, id.vars = c("ID", "Group"), measure.vars = c("b4_all_pulse", "B4_Med_BP_PUL", "After_Med_BP_PUL","B4_color_BP_Pul", "After_color_BP_Pul"), variable.name = "pulse_type", value.name = "pulse")
+#d2.pulse$b4_all <- ifelse(d2.pulse$pulse_type == "b4_all_pulse", 1, 0)
+d2.pulse$b4_med <- ifelse(d2.pulse$pulse_type == "B4_Med_BP_PUL", 1, 0)
+d2.pulse$after_med <- ifelse(d2.pulse$pulse_type == "After_Med_BP_PUL", 1, 0)
+d2.pulse$b4_color <- ifelse(d2.pulse$pulse_type == "B4_color_BP_Pul", 1, 0)
+d2.pulse$after_color <- ifelse(d2.pulse$pulse_type == "After_color_BP_Pul", 1, 0)
+#summary(d2.pulse)
+```
+
+2. Now we are building the simple models
+```{r}
+# Non-Robust Linear Model
+m1 <- lm(bp ~ 1 + b4_med + b4_color + after_color + after_med + ID, data=d2.bp)
+m2 <- lm(pulse ~ 1 + b4_med + b4_color + after_color + after_med + ID, data=d2.pulse)
+
+# Robust Linear Model
+# rob_m1 <- rlm(bp ~ 1 + b4_med + b4_color + after_color + after_med + ID, data=d2.bp)
+# rob_m2 <- rlm(pulse ~ 1 + b4_med + b4_color + after_color + after_med + ID, data=d2.pulse)
+
+#coeftest(m1, vcovHC(m1))
+#stargazer(m1, m2, rob_m1, rob_m2, type="text")
+stargazer(m1, m2, type="text")
+```
+
+
+### Notes:
+The robust linear models showed only a small difference from the basic lm's--dropping the bp_drop after meditation to * ('1 star') significance.
+Other manipulations of outliers also made limited impact in overall conclusions--in both regression & other calculations.
+Adding group did not create significant change.
+Adding group plus interactions with treatment & group began to take signficance out of the model.
+When evaluating Group 0 & Group 1 separately, signficance of the change in blood pressure dropped to '1 star' essentially.
+
+
+### Here is part of the 'by-group' code
+```{r}
+bp1 <- d2.bp[d2.bp$Group==1]
+bp0 <- d2.bp[d2.bp$Group==0]
+pulse1 <- d2.pulse[d2.pulse$Group==1]
+pulse0 <- d2.pulse[d2.pulse$Group==0]
+```
+
+```{r}
+m1a <- lm(bp ~ b4_med + b4_color + after_color + after_med + ID, data=bp1)
+m1b <- lm(bp ~ b4_med + b4_color + after_color + after_med + ID, data=bp0)
+m2a <- lm(pulse ~ b4_med + b4_color + after_color + after_med + ID, data=pulse1)
+m2b <- lm(pulse ~ b4_med + b4_color + after_color + after_med + ID, data=pulse0)
+#coeftest(m1, vcovHC(m1))
+#stargazer(m1a, m1b, m2a, m2b, type="text")
+```
+
+
+##### Now Look at a regression that essentially predicts change in bp & pulse based on whether one colored or meditated
+
+```{r}
+
+# Create table for looking at sys bp outcome alone
+dm = d2
+
+dm$BPM = dm$B4_Med_BP_Sys - dm$After_Med_BP_Sys
+dm$BPC = dm$B4_color_BP_Sys - dm$After_color_BP_Sys
+
+dm.bp = melt(dm, id.vars = c("ID", "Group"), measure.vars = c("BPM", "BPC"), variable.name = "bp_type", value.name = "bp_drop")
+dm.bp$M1_C0 <- ifelse(dm.bp$bp_type == "BPM", 1, 0)
+
+#dm.bp
+```
+
+
+```{r}
+
+# Create table for looking at sys pulse outcome alone
+dp = d2
+
+dp$PUM = dp$B4_Med_BP_PUL - dp$After_Med_BP_PUL
+dp$PUC = dp$B4_color_BP_Pul - dp$After_color_BP_Pul
+
+dp.pu = melt(dp, id.vars = c("ID", "Group"), measure.vars = c("PUM", "PUC"), variable.name = "pulse_type", value.name = "pulse_drop")
+dp.pu$M1_C0 <- ifelse(dp.pu$pulse_type == "PUM", 1, 0)
+
+#dp.pu[dp.pu$pulse_type=="PUM"]
 
 ```
-Based on these results, it would be best to include either Age, or Experience or Recruiter in a model because they are correlated.  Always include Group, as the washout period may have been less effected than we might have hoped.
 
-###Model Building:
+
+# Model 2:  Looking More Closely At The Difference In the Effects of the Treatments
+
+Predict outcomes [drop in blood pressure and drop in pulse] based on whether the subject colors or meditates.
+The baseline coefficient will show the common or baseline effect of treatment (both included).
+The "M1C0" coefficient will show the effect of meditation 'on top of' coloring (positive--means more drop by meditation)
+
+### Interpreting the table below:
+The "bp_drop" and "pulse_drop" in the tables are positive when the relevant number decreases after treatment.
+"M1_C0" is 1 when meditation is the treatement and 0 when coloring is the treatment.
+The related "M1_C0" coefficient is positive if meditation lowers bp or pulse more effectively; negative if coloring lowers the number more effectively.
+
+```{r}
+
+# Create simple model predicting changes in bp and pulse based on treatment (coloring or meditation)
+# m1 <- lm(bp_drop ~ M1_C0, data=dm.bp)
+# m2 <- lm(pulse_drop ~ M1_C0, data=dp.pu)
+m1 <- rlm(bp_drop ~ M1_C0, data=dm.bp)
+m2 <- rlm(pulse_drop ~ M1_C0, data=dp.pu)
+
+#coeftest(m1, vcovHC(m1))
+stargazer(m1, m2,type="text")
+```
+
+```{r}
+# Now add group & cross-effect of group & treatment as covariates
+m1 <- lm(bp_drop ~ Group + M1_C0 + Group*M1_C0, data=dm.bp)
+m2 <- lm(pulse_drop ~ Group + M1_C0 + Group*M1_C0, data=dp.pu)
+
+#coeftest(m1, vcovHC(m1))
+#stargazer(m1, m2,type="text")
+```
+
+### Clarification of above results:
+These models confirm a similar effect of coloring and meditation as the earlier models do.
+The RLM handles outliers more appropriately.
+The RLM estimate of effect on blood pressure is slightly lower than the LM estimate, and the pulse effect shows to be insignificant in this last RLM model--and only '1 star' significant in the previous RLM model.
+
+The initial results (in printed table above) show that there is no significant difference between the effect of meditation and coloring (see M1_CO variable).
+However, when adding the group covariates with a basic lm, we see a '1 star' significance indicating that coloring may potentially lower pulse more effectively.
+The M1_C0 pulse_drop significance goes away for this last model when we utilize the robust model, with or without Group and/or related interaction effects.
+
+
+## Results Summary,
+Both the coloring treatment and the meditation treatment on average lowered the blood pressure and pulse of our subjects.
+This effect appears to be significant for systolic blood pressure. 
+Using the last robust model, particularly the constant which reflects the baseline effect across coloring and meditation together, this  corresponds to a drop in blood pressure between approximately 3 and 9 points (based on 95% Confidence Interval).
+The individual 95% CI's of the two treatments overlap in the earlier models, with the coloring effect interval shifted about 1 or 2 points higher than that of meditation.
+
+Pulse appears to be a little more erratic, as you can see in the related CI's, leading to the overall conclusion that we cannot confirm with confidence that meditation or coloring lower pulse.  In addition, even though coloring had a larger impact on average pulse_drop and bp_drop than meditation, these differences also do not appear to be signficant.
+
+At the end of the day, while we cannot make strong claims related to the impace of coloring and meditation on pulse, the results do build confidence in the ability of meditation and coloring to lower systollic blood pressure.  No such confidence can be claimed for the superiority of meditation over coloring or vice versa.
+
+
+### Issues/Concerns
+
+* One of the most difficult experiment decisions is what particular form of meditation to choose from and how long the meditation should be. We decided to go with 15-minute guided meditation from https://www.appropriateresponse.com/teachings/ so our analysis and conclusion can only be based on this particular setup.  If we were to move from a 'class experiment' to a 'full experiment', we would definitely need to consider more carefully various forms and lengths of meditation, as well as how we may need to implement further blocking and clustering, across much larger treatment and control populations.
+* The subjects consist of our friends and relatives. This sample is not randomized from the general population therefore doesn't represent the population's distribution hence no generalization can be drawn from our experiment even if we find causal effect from it.
+* The wash-out period of 5 minutes may not be sufficient to remove the treatment of the first exercise on the second one.
+* The on-line person with ID=13 seems to have unreliable blood pressure measurements which indicates a potential precision issue with the blood pressure device. It can also be an issue with how the experiment was conducted on-line.
+* Some tests were conducted 'one-on-one', and some were conducted in groups which can lead to bias.
+* It was our first experiment so there maybe mistakes or inconsistencies along the way that we are not aware of.
+
+
+Based on these facts, we believe more future work needs to be done to refine our experiment design to provide more complete controls and more advanced methods across a larger population, in order to more clearly identify any causal effects of meditation on blood pressure.
+
+###Future Research
+
+Our current project suffers from time constraints in setting up and conducting the experiment, financial limitations in acquiring the appropriate measurement devices, and difficulty in finding enough people to participate.  Future research would need to address and overcome all of these challenges.  
+
+Five of the top improvements we would want to make are:
+  
+* Random selection from general population with larger size.
+* Better blood pressure device and measurement.
+* Longer periods and various forms of meditation.
+* To address the insufficient washout period, either increase the time allocated to washout, or utilize 2 separate groups or time periods.
+* Possibly implement more advanced blocking on covariates like experience and age to account for variance between groups.
+
+
+
+
+
+# Appendix -- Some of our additional code and exploratory efforts
+
+
+### Additional T-tests
+
+### Check the significance of each treatment
+```{r}
+t.test(d2$B4_Med_BP_Sys, d2$After_Med_BP_Sys)
+t.test(d2$B4_Med_BP_PUL, d2$After_Med_BP_PUL)
+t.test(d2$B4_color_BP_Sys, d2$After_color_BP_Sys)
+t.test(d2$B4_color_BP_Pul, d2$After_color_BP_Pul)
+```
+
+### Check the significance of the difference-in-differences
+```{r}
+t.test(d2$col_sys_diff, d2$med_sys_diff)
+t.test(d2$col_pul_diff, d2$med_pul_diff)
+```
+
+### Here is some of the original analysis which led to over-fitting.
 
 #####Meditation Effects:
 
@@ -317,326 +551,19 @@ col_pul_age_ols = lm(col_pul_diff ~ Group + pre_col_pul + age +
 ```
 
 #####Compare the Meditation and Color effects linear models, separately
+
 ```{r stargazer_ind}
 #compare meditation models
 cat("Meditation Model Comparison\n")
-stargazer(med_sys_exp_ols, med_sys_age_ols, med_pul_exp_ols, med_pul_age_ols, type = "text")
+#stargazer(med_sys_exp_ols, med_sys_age_ols, med_pul_exp_ols, med_pul_age_ols, type = "text")
 #compare coloring models
 cat("\n\nColor Model Comparison\n")
-stargazer(col_sys_exp_ols, col_sys_age_ols, col_pul_exp_ols, col_pul_age_ols, type = "text")
-```
-
-### Simpler models
-1. From the original data table, each row:
-
-+-----------+-----------+----------+--------------+-------------+----------------+
-| person_id | b4_all_bp |b4_med_bp | after_med_bp | b4_color_bp | after_color_bp |
-+===========+===========+==========+==============+=============+================+
-|1          | 121       | 121      |   111        |   120       |110             |
-+-----------+-----------+----------+--------------+-------------+----------------+
-
-is convert into 5 rows like this: 
-
-+-----------+-----+--------+-----------+-----------+----------+-------------+
-| person_id | bp  | b4_all | b4_med    | after_med | b4_color | after_color |
-+===========+=====+========+===========+===========+==========+=============+
-|1          |121  |   1    |   0       |0          |0         | 0           |
-+-----------+-----+--------+-----------+-----------+----------+-------------+
-|1          |121  |   0    |   1       |0          |0         | 0           |
-+-----------+-----+--------+-----------+-----------+----------+-------------+
-|1          |111  |   0    |   0       |1          |0         | 0           |
-+-----------+-----+--------+-----------+-----------+----------+-------------+
-|1          |120  |   0    |   0       |0          |1         | 0           |
-+-----------+-----+--------+-----------+-----------+----------+-------------+
-|1          |110  |   0    |   0       |0          |0         | 1           |
-+-----------+-----+--------+-----------+-----------+----------+-------------+
-
-then build the model `bp ~ 1 + b4_all + after_med + after_color + person_id`
-
-```{r}
-d2.bp = melt(d2, id.vars = c("ID"), measure.vars = c("b4_all_sys", "B4_Med_BP_Sys", "After_Med_BP_Sys","B4_color_BP_Sys", "After_color_BP_Sys"), variable.name = "bp_type", value.name = "bp")
-#d2.bp$b4_all <- ifelse(d2.bp$bp_type == "b4_all_sys", 1, 0)
-d2.bp$b4_med <- ifelse(d2.bp$bp_type == "B4_Med_BP_Sys", 1, 0)
-d2.bp$after_med <- ifelse(d2.bp$bp_type == "After_Med_BP_Sys", 1, 0)
-d2.bp$b4_color <- ifelse(d2.bp$bp_type == "B4_color_BP_Sys", 1, 0)
-d2.bp$after_color <- ifelse(d2.bp$bp_type == "After_color_BP_Sys", 1, 0)
-#summary(d2.bp)
-```
-
-Now, we build the same data table for pulse data
-```{r}
-d2.pulse = melt(d2, id.vars = c("ID"), measure.vars = c("b4_all_pulse", "B4_Med_BP_PUL", "After_Med_BP_PUL","B4_color_BP_Pul", "After_color_BP_Pul"), variable.name = "pulse_type", value.name = "pulse")
-#d2.pulse$b4_all <- ifelse(d2.pulse$pulse_type == "b4_all_pulse", 1, 0)
-d2.pulse$b4_med <- ifelse(d2.pulse$pulse_type == "B4_Med_BP_PUL", 1, 0)
-d2.pulse$after_med <- ifelse(d2.pulse$pulse_type == "After_Med_BP_PUL", 1, 0)
-d2.pulse$b4_color <- ifelse(d2.pulse$pulse_type == "B4_color_BP_Pul", 1, 0)
-d2.pulse$after_color <- ifelse(d2.pulse$pulse_type == "After_color_BP_Pul", 1, 0)
-#summary(d2.pulse)
-```
-
-2. Now we are building the simple models
-```{r}
-m1 <- lm(bp ~ 1 + b4_med + b4_color + after_color + after_med + ID, data=d2.bp)
-m2 <- lm(pulse ~ 1 + b4_med + b4_color + after_color + after_med + ID, data=d2.pulse)
-
-#coeftest(m1, vcovHC(m1))
-stargazer(m1, m2,type="text")
-```
-
-##### Now we are seeing the opposite of what we found earlier: 
-* both mediation and coloring are both statistically significant at lowering blood pressure!
-* both mediation and coloring has no statistical significance at lowering pulse
-* What can we conclude from ID?
-
-These models are comparing post-meditation and post-coloring BPs to BP before any exercises start? Is this a valid way to do it? That's why we have different result from the previous models?
-
-
-### adding group
-
-```{r}
-d2.bp = melt(d2, id.vars = c("ID", "Group"), measure.vars = c("b4_all_sys", "B4_Med_BP_Sys", "After_Med_BP_Sys","B4_color_BP_Sys", "After_color_BP_Sys"), variable.name = "bp_type", value.name = "bp")
-#d2.bp$b4_all <- ifelse(d2.bp$bp_type == "b4_all_sys", 1, 0)
-d2.bp$b4_med <- ifelse(d2.bp$bp_type == "B4_Med_BP_Sys", 1, 0)
-d2.bp$after_med <- ifelse(d2.bp$bp_type == "After_Med_BP_Sys", 1, 0)
-d2.bp$b4_color <- ifelse(d2.bp$bp_type == "B4_color_BP_Sys", 1, 0)
-d2.bp$after_color <- ifelse(d2.bp$bp_type == "After_color_BP_Sys", 1, 0)
-#summary(d2.bp)
-```
-
-```{r}
-d2.pulse = melt(d2, id.vars = c("ID", "Group"), measure.vars = c("b4_all_pulse", "B4_Med_BP_PUL", "After_Med_BP_PUL","B4_color_BP_Pul", "After_color_BP_Pul"), variable.name = "pulse_type", value.name = "pulse")
-#d2.pulse$b4_all <- ifelse(d2.pulse$pulse_type == "b4_all_pulse", 1, 0)
-d2.pulse$b4_med <- ifelse(d2.pulse$pulse_type == "B4_Med_BP_PUL", 1, 0)
-d2.pulse$after_med <- ifelse(d2.pulse$pulse_type == "After_Med_BP_PUL", 1, 0)
-d2.pulse$b4_color <- ifelse(d2.pulse$pulse_type == "B4_color_BP_Pul", 1, 0)
-d2.pulse$after_color <- ifelse(d2.pulse$pulse_type == "After_color_BP_Pul", 1, 0)
-#summary(d2.pulse)
-```
-
-```{r}
-m1 <- lm(bp ~ b4_med + b4_color + after_color + after_med + ID + Group + Group*after_med + Group*after_color, data=d2.bp)
-m2 <- lm(pulse ~ b4_med + b4_color + after_color + after_med + ID + Group + Group*after_med + Group*after_color, data=d2.pulse)
-
-#coeftest(m1, vcovHC(m1))
-stargazer(m1, m2,type="text")
-```
-
-```{r}
-bp1 <- d2.bp[d2.bp$Group==1]
-bp0 <- d2.bp[d2.bp$Group==0]
-pulse1 <- d2.pulse[d2.pulse$Group==1]
-pulse0 <- d2.pulse[d2.pulse$Group==0]
-```
-
-```{r}
-m1a <- lm(bp ~ b4_med + b4_color + after_color + after_med + ID, data=bp1)
-m1b <- lm(bp ~ b4_med + b4_color + after_color + after_med + ID, data=bp0)
-m2a <- lm(pulse ~ b4_med + b4_color + after_color + after_med + ID, data=pulse1)
-m2b <- lm(pulse ~ b4_med + b4_color + after_color + after_med + ID, data=pulse0)
-#coeftest(m1, vcovHC(m1))
-stargazer(m1a, m1b, m2a, m2b, type="text")
-```
-
-##### Rethinking breakdown
-
-
-
-
-
-```{r}
-
-# Create table for looking at sys bp outcome alone
-dm = d2
-
-dm$BPM = dm$B4_Med_BP_Sys - dm$After_Med_BP_Sys
-dm$BPC = dm$B4_color_BP_Sys - dm$After_color_BP_Sys
-
-dm.bp = melt(dm, id.vars = c("ID", "Group"), measure.vars = c("BPM", "BPC"), variable.name = "bp_type", value.name = "bp_drop")
-dm.bp$M1_C0 <- ifelse(dm.bp$bp_type == "BPM", 1, 0)
-
-dm.bp
-```
-```{r}
-
-# Create table for looking at sys pulse outcome alone
-dp = d2
-
-dp$PUM = dp$B4_Med_BP_PUL - dp$After_Med_BP_PUL
-dp$PUC = dp$B4_color_BP_Pul - dp$After_color_BP_Pul
-
-dp.pu = melt(dp, id.vars = c("ID", "Group"), measure.vars = c("PUM", "PUC"), variable.name = "pulse_type", value.name = "pulse_drop")
-dp.pu$M1_C0 <- ifelse(dp.pu$pulse_type == "PUM", 1, 0)
-
-dp.pu[dp.pu$pulse_type=="PUM"]
-
-```
-
-```{r}
-outlierKD <- function(dt, var) {
-  var_name <- eval(substitute(var),eval(dt))
-  tot <- sum(!is.na(var_name))
-  na1 <- sum(is.na(var_name))
-  m1 <- mean(var_name, na.rm = T)
-  par(mfrow=c(2, 2), oma=c(0,0,3,0))
-  boxplot(var_name, main="With outliers")
-  hist(var_name, main="With outliers", xlab=NA, ylab=NA)
-  outlier <- boxplot.stats(var_name)$out
-  mo <- mean(outlier)
-  var_name <- ifelse(var_name %in% outlier, NA, var_name)
-  boxplot(var_name, main="Without outliers")
-  hist(var_name, main="Without outliers", xlab=NA, ylab=NA)
-  title("Outlier Check", outer=TRUE)
-  na2 <- sum(is.na(var_name))
-  message("Outliers identified: ", na2 - na1, " from ", tot, " observations")
-  message("Proportion (%) of outliers: ", (na2 - na1) / tot*100)
-  message("Mean of the outliers: ", mo)
-  m2 <- mean(var_name, na.rm = T)
-  message("Mean without removing outliers: ", m1)
-  message("Mean if we remove outliers: ", m2)
-  response <- readline(prompt="Do you want to remove outliers and to replace with NA? [yes/no]: ")
-  if(response == "y" | response == "yes"){
-    dt[as.character(substitute(var))] <- invisible(var_name)
-    assign(as.character(as.list(match.call())$dt), dt, envir = .GlobalEnv)
-    message("Outliers successfully removed", "\n")
-    return(invisible(dt))
-  } else{
-    message("Nothing changed", "\n")
-    return(invisible(var_name))
-  }
-}
-
-outlierKD(dp.pu, pulse_drop)
-```
-
-```{r}
-outlierKD(dm.bp, bp_drop)
-```
-
-```{r}
-dp.pu = dp.pu[dp.pu$pulse_drop<20]
-
-dp.pu = dp.pu[dp.pu$pulse_drop>-16]
-
-hist(dp.pu$pulse_drop)
-```
-
-```{r}
-
-dm.bp = dm.bp[dm.bp$bp_drop<25]
-hist(dm.bp$bp_drop)
+#stargazer(col_sys_exp_ols, col_sys_age_ols, col_pul_exp_ols, col_pul_age_ols, type = "text")
 ```
 
 
-```{r}
 
-# Create simple model predicting changes in bp and pulse based on treatment (coloring or meditation)
-m1 <- lm(bp_drop ~ M1_C0, data=dm.bp)
-m2 <- lm(pulse_drop ~ M1_C0, data=dp.pu)
-
-#coeftest(m1, vcovHC(m1))
-stargazer(m1, m2,type="text")
-```
-
-```{r}
-
-# Now add group as a covariate
-m1 <- lm(bp_drop ~ Group + M1_C0, data=dm.bp)
-m2 <- lm(pulse_drop ~ Group + M1_C0, data=dp.pu)
-
-#coeftest(m1, vcovHC(m1))
-stargazer(m1, m2,type="text")
-```
-
-```{r}
-# Now add cross-effect of group & treatment
-m1 <- lm(bp_drop ~ Group + M1_C0 + Group*M1_C0, data=dm.bp)
-m2 <- lm(pulse_drop ~ Group + M1_C0 + Group*M1_C0, data=dp.pu)
-
-#coeftest(m1, vcovHC(m1))
-stargazer(m1, m2,type="text")
-```
-
-### Note: important to at least calculate these without the outliers
-
-```{r}
-# average treatment effects of meditation
-mean(dm.bp$bp_drop[dm.bp$M1_C0==1])
-mean(dp.pu$pulse_drop[dp.pu$M1_C0==1])
-```
-```{r}
-# average treatment effects of coloring
-mean(dm.bp$bp_drop[dm.bp$M1_C0==0])
-mean(dp.pu$pulse_drop[dp.pu$M1_C0==0])
-```
-```{r}
-# average difference in treatment effects
-# On average how much more did numbers drop when coloring vs meditating?
-
-# Note:  I have not dropped outliers from this one yet...
-
-d20 = d2
-
-d20 = d20[d20$med_sys_diff<25]
-d20 = d20[d20$col_sys_diff<25]
-
-d20 = d20[d20$med_pul_diff<20]
-d20 = d20[d20$col_pul_diff<20]
-d20 = d20[d20$med_pul_diff>-16]
-d20 = d20[d20$col_pul_diff>-16]
-
-d20 = d20[d20$med_sys_<20]
-
-
-d20$bp_delta = d2$col_sys_diff - d2$med_sys_diff
-d20$pu_delta = d2$col_pul_diff - d2$med_pul_diff
-
-mean(d20$bp_delta)
-mean(d20$pu_delta)
-
-#hist(d20$bp_delta)
-
-#hist(d20$pu_delta)
-```
-
-```{r}
-# t test across both groups combined:  that effect is zero
-t.test(dm.bp$bp_drop)
-t.test(dp.pu$pulse_drop)
-```
-```{r}
-# t test on meditation group  that effect is zero
-t.test(dm.bp$bp_drop[dm.bp$M1_C0==1])
-t.test(dp.pu$pulse_drop[dp.pu$M1_C0==1])
-```
-
-```{r}
-# t test on coloring group  that effect is zero
-t.test(dm.bp$bp_drop[dm.bp$M1_C0==0])
-t.test(dp.pu$pulse_drop[dp.pu$M1_C0==0])
-```
-
-```{r}
-# t test that the meditation and coloring effects are the same
-t.test(d2$col_sys_diff, d2$med_sys_diff)
-t.test(d2$col_pul_diff, d2$med_pul_diff)
-``` 
-
-
-
-
-
-
-##### Why there is such difference? Which ones are more reliable: simpler ones or previous ones?
-
-### Check the significance of each treatment
-```{r}
-t.test(d2$B4_Med_BP_Sys, d2$After_Med_BP_Sys)
-t.test(d2$B4_Med_BP_PUL, d2$After_Med_BP_PUL)
-t.test(d2$B4_color_BP_Sys, d2$After_color_BP_Sys)
-t.test(d2$B4_color_BP_Pul, d2$After_color_BP_Pul)
-```
-
-###Difference-in-differences Estimate
+### Difference-in-differences Estimate
 ```{r diff}
 
 
@@ -644,69 +571,25 @@ cat("Difference in differences on systolic blood pressure:", mean(d2$col_med_sys
 cat("\nDifference in differences on pulse rate:", mean(d2$col_med_pul_diff), "\n")
 ```
 
-###Linear Regression model with difference-in-difference Estimate
+
+### Linear Regression model with difference-in-difference Estimate
 ```{r diff_models}
 
 cat("\nDifference in Differences Model Comparison:\n")
 dd_sys_ols1 = lm(col_med_sys_diff~ Group + pre_sys_diff + experience + Gender + 
-               Religion +  caffeinated_drinks + in_person + 
-               prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
+                   Religion +  caffeinated_drinks + in_person + 
+                   prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
 dd_sys_ols2 = lm(col_med_sys_diff~ Group + pre_sys_diff + age + Gender + 
-               Religion +  caffeinated_drinks + in_person + 
-               prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
+                   Religion +  caffeinated_drinks + in_person + 
+                   prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
 
 dd_pul_ols1 = lm(col_med_pul_diff~ Group + pre_pul_diff + experience + Gender + 
-               Religion +  caffeinated_drinks + in_person + 
-               prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
+                   Religion +  caffeinated_drinks + in_person + 
+                   prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
 dd_pul_ols2 = lm(col_med_pul_diff~ Group + pre_pul_diff + age + Gender + 
-               Religion +  caffeinated_drinks + in_person + 
-               prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
+                   Religion +  caffeinated_drinks + in_person + 
+                   prev_act + Before_Meditation_how_relaxed + Post_Med_focus, data = d2)
 
 stargazer(dd_sys_ols1, dd_sys_ols2, dd_pul_ols1, dd_pul_ols2,type = "text")
 ```
 
-### Check the significance of the difference-in-differences
-```{r}
-t.test(d2$col_sys_diff, d2$med_sys_diff)
-t.test(d2$col_pul_diff, d2$med_pul_diff)
-```
-
-### Results:
-Both the coloring treatment and the meditation treatment on average lowered the blood pressure and pulse of our subjects.  Our results show the effect from coloring to be more powerful than meditation. However, t-tests show that this difference is not statistically significant. A number of variables influence the variation in our results:
-
-##### Meditation:
-A number of variables were found to influence the results of meditation on systolic blood pressure and pulse.  In both cases, the **Group** was significant, telling us that the washout period was not sufficient to avoid spillover effects. One of the most significant variables influencing systolic blood pressure differences was the **initial systolic blood pressure**: those subjects who began the session with a higher systolic measure were most likely to have a larger difference. **Initial pulse** was significant to a lesser degree on the post-meditation pulse measurement. **Experience** also showed a significant impact on systolic blood pressure in our model, particularly for participants who had 1 to 10 years of meditation experience.  However this is a group of only two people. In addition, those with 10 to 25 years of experience were most likely to see a benefit on meditation to their pulse rates. **Previous activity** appears to be highly significant in influencing systolic blood pressure from meditation, and on pulse to a lesser degree. **Religion** had little effect on pulse, but those who identified with a particular faith showed a lessening effect for meditation on blood pressure. **Caffeinated beverages** were significant for blood pressure only.  Finally, pulse dropped more when the experiment was conducted **in person**, but this variable had a more limited impact on blood pressure. 
-
-One of the surprising results to the researchers was that those who espoused a particular religion, particularly those that are associated with meditation (Buddhism and Hinduism), saw the smallest effect of the meditation session on blood pressure. It may be that, for people who are more accustomed to meditation, the particular format of the guided meditation was distracting, or that a longer meditation would have revealed different results. It is also possible that over time, meditation has less of an effect on a person's blood pressure. Though the experiment is not structured to capture causal effects from these variables, it could be a very interesting subject for a future study or at least help inform how we structure future tests.
-
-#####Coloring:
-In contrast, those who identified with a particular **Religion** saw significant positive impact on coloring effects on pulse rates, and to a lesser degree on systolic blood pressure. In this case, those who identified as having no **religion** also saw a positive benefit, while those identifying as agnostic or 'other' did not have a significant effect. As expected, **prior measurements** of blood pressure and pulse were highly significant. **Age** was significant as well; people over 40 were also much more likely to find coloring highly beneficial. In contrast to meditation, **in person** sessions were less beneficial for colorers.  We could again speculate what causes may be at work, and then generate new hypotheses or implement more careful controls in future experiments.  For example, you could speculate that social anxiety took away from the overall calming effects of coloring, when the coloring took place in groups.
-
-##Conclusion
-
-While there are some statistically significant coefficients from the models above to measure the effect of both meditation and coloring on blood pressure, the t-tests indicate that there are no significant differences between the effects of meditation and coloring on blood pressure and pulse rate. This implies that meditation as well as coloring, and potentially some other methods of relaxation may have similar impacts on lowering blood pressure
-which is an interesting discovery that therefore we can't make any causal claim on meditation effect on blood pressure.
-
-### Issues/Concerns
-
-* One of the most difficult experiment decisions is what particular form of meditation to choose from and how long the meditation should be. We decided to go with 15-minute guided meditation from https://www.appropriateresponse.com/teachings/ so our analysis and conclusion can only be based on this particular setup.  If we were to move from a 'class experiment' to a 'full experiment', we would definitely need to consider more carefully various forms and lengths of meditation, as well as how we may need to implement further blocking and clustering, across much larger treatment and control populations.
-* The subjects consist of our friends and relatives. This sample is not randomized from the general population therefore doesn't represent the population's distribution hence no generalization can be drawn from our experiment even if we find causal effect from it.
-* The wash-out period of 5 minutes may not be sufficient to remove the treatment of the first exercise on the second one.
-* The on-line person with ID=13 seems to have unreliable blood pressure measurements which indicates a potential precision issue with the blood pressure device. It can also be an issue with how the experiment was conducted on-line.
-* Some tests were conducted 'one-on-one', and some were conducted in groups which can lead to bias.
-* It was our first experiment so there maybe mistakes or inconsistencies along the way that we are not aware of.
-
-
-Based on these facts, we believe more future work needs to be done to refine our experiment design to provide more complete controls and more advanced methods across a larger population, in order to more clearly identify any causal effects of meditation on blood pressure.
-
-###Future Research
-
-Our current project suffers from time constraints in setting up and conducting the experiment, financial limitations in acquiring the appropriate measurement devices, and difficulty in finding enough people to participate.  Future research would need to address and overcome all of these challenges.  
-
-Five of the top improvements we would want to make are:
-
-* Random selection from general population with larger size.
-* Better blood pressure device and measurement.
-* Longer periods and various forms of meditation.
-* To address the insufficient washout period, either increase the time allocated to washout, or utilize 2 separate groups or time periods.
-* Possibly implement more advanced blocking on covariates like experience and age to account for variance between groups.
